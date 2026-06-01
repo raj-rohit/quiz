@@ -1,0 +1,77 @@
+{
+  "deck": {
+    "nl": "Dutch Classics",
+    "fr": "French Icons",
+    "be": "Belgian Originals",
+    "de": "German Classics"
+  },
+  "quiz": {
+    "identify": "Identify the mark",
+    "placeholder": "Guess the brand…",
+    "check": "Check",
+    "giveUp": "I don't know",
+    "progress": "Progress",
+    "next": "Next Challenge",
+    "score": "Score",
+    "title": "Dutch Classics",
+    "chapterBadge": "Chapter 01",
+    "guessBrand": "Guess the brand...",
+    "iDontKnow": "I DON'T KNOW",
+    "reveal_next": "NEXT QUESTION",
+    "nearMatch_title": "So close!",
+    "nearMatch_message": "You typed \"{{guess}}\". Check your spelling!",
+    "nearMatch_button": "Try Again",
+    "incorrect_title": "Incorrect",
+    "incorrect_message": "That's not quite right.",
+    "incorrect_button": "Try Again"
+  },
+  "nav": {
+    "explore": "Explore",
+    "arena": "Arena",
+    "profile": "Profile",
+    "rankings": "Rankings"
+  },
+  "store": {
+    "kicker": "Store",
+    "title": "Packs",
+    "owned": "Owned",
+    "play": "Play",
+    "tryFree": "Try free",
+    "questions": "questions",
+    "bundleCta": "Unlock everything",
+    "save": "Save",
+    "regular": "usually",
+    "restore": "Restore purchases",
+    "noAccount": "No account needed · restore anytime"
+  },
+  "sheet": {
+    "title": "One-time purchase",
+    "confirm": "Confirm",
+    "faceid": "Double-click the side button",
+    "processing": "Working…",
+    "done": "Unlocked",
+    "continue": "Start",
+    "cancel": "Cancel",
+    "restored": "Purchases restored",
+    "restoreEmpty": "Nothing to restore"
+  },
+  "profile": {
+    "name": "Player",
+    "sub": "Local profile · this device",
+    "solved": "Solved",
+    "streak": "Streak",
+    "best": "Best time",
+    "days": "d",
+    "myPacks": "My packs",
+    "settings": "Settings",
+    "language": "Language",
+    "darkMode": "Dark mode",
+    "privacy": "No account. Your data stays on this device only."
+  },
+  "disclaimer": "All logos and brand names are the property of their respective companies. They are used here solely for educational trivia purposes.",
+  "notFound": {
+    "title": "Oops!",
+    "message": "This screen doesn't exist.",
+    "goHome": "Go to home screen!"
+  }
+}

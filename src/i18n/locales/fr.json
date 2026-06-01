@@ -1,0 +1,77 @@
+{
+  "deck": {
+    "nl": "Classiques néerlandais",
+    "fr": "Classiques Français",
+    "be": "Classiques Belges",
+    "de": "Classiques allemands"
+  },
+  "quiz": {
+    "identify": "Identifiez la marque",
+    "placeholder": "Devinez la marque…",
+    "check": "Vérifier",
+    "giveUp": "Je ne sais pas",
+    "progress": "Progression",
+    "next": "Défi suivant",
+    "score": "Score",
+    "title": "Classiques Néerlandais",
+    "chapterBadge": "Chapitre 01",
+    "guessBrand": "Devinez la marque...",
+    "iDontKnow": "JE NE SAIS PAS",
+    "reveal_next": "SUIVANT",
+    "nearMatch_title": "Presque !",
+    "nearMatch_message": "Vous avez tapé \"{{guess}}\". Vérifiez votre orthographe !",
+    "nearMatch_button": "Réessayer",
+    "incorrect_title": "Incorrect",
+    "incorrect_message": "Ce n'est pas tout à fait ça.",
+    "incorrect_button": "Réessayer"
+  },
+  "nav": {
+    "explore": "Explorer",
+    "arena": "Arène",
+    "profile": "Profil",
+    "rankings": "Classement"
+  },
+  "store": {
+    "kicker": "Boutique",
+    "title": "Packs",
+    "owned": "Acquis",
+    "play": "Jouer",
+    "tryFree": "Essai gratuit",
+    "questions": "questions",
+    "bundleCta": "Tout débloquer",
+    "save": "Économisez",
+    "regular": "normalement",
+    "restore": "Restaurer les achats",
+    "noAccount": "Aucun compte requis · restaurez à tout moment"
+  },
+  "sheet": {
+    "title": "Achat unique",
+    "confirm": "Confirmer",
+    "faceid": "Double-cliquez le bouton latéral",
+    "processing": "En cours…",
+    "done": "Débloqué",
+    "continue": "Commencer",
+    "cancel": "Annuler",
+    "restored": "Achats restaurés",
+    "restoreEmpty": "Rien à restaurer"
+  },
+  "profile": {
+    "name": "Joueur",
+    "sub": "Profil local · cet appareil",
+    "solved": "Résolus",
+    "streak": "Série",
+    "best": "Meilleur temps",
+    "days": "j",
+    "myPacks": "Mes packs",
+    "settings": "Réglages",
+    "language": "Langue",
+    "darkMode": "Mode sombre",
+    "privacy": "Aucun compte. Vos données restent sur cet appareil."
+  },
+  "disclaimer": "Tous les logos et noms de marque appartiennent à leurs sociétés respectives. Ils sont utilisés ici uniquement à des fins de quiz éducatif.",
+  "notFound": {
+    "title": "Oups !",
+    "message": "Cet écran n'existe pas.",
+    "goHome": "Aller à l'écran d'accueil !"
+  }
+}

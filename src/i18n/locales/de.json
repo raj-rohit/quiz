@@ -1,0 +1,77 @@
+{
+  "deck": {
+    "nl": "Niederländische Klassiker",
+    "fr": "Französische Klassiker",
+    "be": "Belgische Klassiker",
+    "de": "Deutsche Klassiker"
+  },
+  "quiz": {
+    "identify": "Erkenne das Logo",
+    "placeholder": "Errate die Marke…",
+    "check": "Prüfen",
+    "giveUp": "Keine Ahnung",
+    "progress": "Fortschritt",
+    "next": "Nächste Aufgabe",
+    "score": "Punkte",
+    "title": "Niederländische Klassiker",
+    "chapterBadge": "Kapitel 01",
+    "guessBrand": "Marke erraten...",
+    "iDontKnow": "ICH WEISS ES NICHT",
+    "reveal_next": "WEITER",
+    "nearMatch_title": "Fast richtig!",
+    "nearMatch_message": "Sie haben \"{{guess}}\" eingegeben. Überprüfen Sie Ihre Schreibweise!",
+    "nearMatch_button": "Nochmal versuchen",
+    "incorrect_title": "Falsch",
+    "incorrect_message": "Das ist nicht ganz richtig.",
+    "incorrect_button": "Nochmal versuchen"
+  },
+  "nav": {
+    "explore": "Entdecken",
+    "arena": "Arena",
+    "profile": "Profil",
+    "rankings": "Rangliste"
+  },
+  "store": {
+    "kicker": "Shop",
+    "title": "Pakete",
+    "owned": "Im Besitz",
+    "play": "Spielen",
+    "tryFree": "Gratis testen",
+    "questions": "Fragen",
+    "bundleCta": "Alles freischalten",
+    "save": "Spare",
+    "regular": "normal",
+    "restore": "Käufe wiederherstellen",
+    "noAccount": "Kein Konto nötig · jederzeit wiederherstellen"
+  },
+  "sheet": {
+    "title": "Einmaliger Kauf",
+    "confirm": "Bestätigen",
+    "faceid": "Seitentaste doppelt drücken",
+    "processing": "Läuft…",
+    "done": "Freigeschaltet",
+    "continue": "Starten",
+    "cancel": "Abbrechen",
+    "restored": "Käufe wiederhergestellt",
+    "restoreEmpty": "Nichts wiederherzustellen"
+  },
+  "profile": {
+    "name": "Spieler",
+    "sub": "Lokales Profil · dieses Gerät",
+    "solved": "Gelöst",
+    "streak": "Serie",
+    "best": "Bestzeit",
+    "days": "T",
+    "myPacks": "Meine Pakete",
+    "settings": "Einstellungen",
+    "language": "Sprache",
+    "darkMode": "Dunkelmodus",
+    "privacy": "Kein Konto. Deine Daten bleiben nur auf diesem Gerät."
+  },
+  "disclaimer": "Alle Logos und Markennamen sind Eigentum ihrer jeweiligen Unternehmen. Sie werden hier ausschließlich für Bildungs- und Trivia-Zwecke verwendet.",
+  "notFound": {
+    "title": "Hoppla!",
+    "message": "Dieser Bildschirm existiert nicht.",
+    "goHome": "Zur Startseite!"
+  }
+}

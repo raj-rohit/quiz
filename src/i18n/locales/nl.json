@@ -1,0 +1,77 @@
+{
+  "deck": {
+    "nl": "Nederlandse Klassiekers",
+    "fr": "Franse Iconen",
+    "be": "Belgische Klassiekers",
+    "de": "Duitse Klassiekers"
+  },
+  "quiz": {
+    "identify": "Herken het merk",
+    "placeholder": "Raad het merk…",
+    "check": "Controleer",
+    "giveUp": "Ik weet het niet",
+    "progress": "Voortgang",
+    "next": "Volgende uitdaging",
+    "score": "Score",
+    "title": "Nederlandse Klassiekers",
+    "chapterBadge": "Hoofdstuk 01",
+    "guessBrand": "Raad het merk...",
+    "iDontKnow": "IK WEET HET NIET",
+    "reveal_next": "VOLGENDE",
+    "nearMatch_title": "Zo dichtbij!",
+    "nearMatch_message": "Je typte \"{{guess}}\". Controleer je spelling!",
+    "nearMatch_button": "Probeer opnieuw",
+    "incorrect_title": "Onjuist",
+    "incorrect_message": "Dat is niet helemaal goed.",
+    "incorrect_button": "Probeer opnieuw"
+  },
+  "nav": {
+    "explore": "Ontdek",
+    "arena": "Arena",
+    "profile": "Profiel",
+    "rankings": "Ranglijst"
+  },
+  "store": {
+    "kicker": "Winkel",
+    "title": "Pakketten",
+    "owned": "In bezit",
+    "play": "Spelen",
+    "tryFree": "Probeer gratis",
+    "questions": "vragen",
+    "bundleCta": "Ontgrendel alles",
+    "save": "Bespaar",
+    "regular": "normaal",
+    "restore": "Aankopen herstellen",
+    "noAccount": "Geen account nodig · herstel altijd"
+  },
+  "sheet": {
+    "title": "Eénmalige aankoop",
+    "confirm": "Bevestig",
+    "faceid": "Dubbelklik op de zijknop",
+    "processing": "Bezig…",
+    "done": "Ontgrendeld",
+    "continue": "Beginnen",
+    "cancel": "Annuleer",
+    "restored": "Aankopen hersteld",
+    "restoreEmpty": "Niets om te herstellen"
+  },
+  "profile": {
+    "name": "Speler",
+    "sub": "Lokaal profiel · dit toestel",
+    "solved": "Opgelost",
+    "streak": "Reeks",
+    "best": "Beste tijd",
+    "days": "d",
+    "myPacks": "Mijn pakketten",
+    "settings": "Instellingen",
+    "language": "Taal",
+    "darkMode": "Donkere modus",
+    "privacy": "Geen account. Je gegevens staan alleen op dit toestel."
+  },
+  "disclaimer": "Alle logo’s en merknamen zijn eigendom van hun respectievelijke bedrijven. Ze worden hier uitsluitend gebruikt voor educatieve trivia-doeleinden.",
+  "notFound": {
+    "title": "Oeps!",
+    "message": "Dit scherm bestaat niet.",
+    "goHome": "Ga naar het startscherm!"
+  }
+}
