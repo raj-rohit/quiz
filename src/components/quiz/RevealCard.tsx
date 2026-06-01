@@ -20,7 +20,7 @@ const POP_EASING = Easing.bezier(motion.pop.easing[0], motion.pop.easing[1], mot
 /** Staggered enter (translateY 8 + opacity) on mount. */
 function FadeUp({ delay, children, style }: { delay: number; children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
   const opacity = useSharedValue(0);
-  const ty = useSharedValue(motion.fadeup.translateY);
+  const ty = useSharedValue<number>(motion.fadeup.translateY);
   useEffect(() => {
     opacity.value = withDelay(delay, withTiming(1, { duration: motion.fadeup.duration, easing: FADE_EASING }));
     ty.value = withDelay(delay, withTiming(0, { duration: motion.fadeup.duration, easing: FADE_EASING }));
