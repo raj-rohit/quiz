@@ -22,6 +22,14 @@ export const radii = {
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24 } as const;
 
+// Plus Jakarta Sans weights (loaded at app root via @expo-google-fonts).
+export const fonts = {
+  regular: 'PlusJakartaSans_400Regular',
+  medium: 'PlusJakartaSans_500Medium',
+  bold: 'PlusJakartaSans_700Bold',
+  extrabold: 'PlusJakartaSans_800ExtraBold',
+} as const;
+
 export const motion = {
   fadeup: { duration: 450, easing: [0.2, 0.8, 0.2, 1] as const, translateY: 8 },
   pop: { duration: 550, easing: [0.2, 0.9, 0.3, 1.25] as const },
