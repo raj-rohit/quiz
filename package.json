@@ -12,12 +12,17 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "testMatch": ["**/__tests__/**/*.test.ts?(x)"],
-    "transformIgnorePatterns": ["node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg))"]
+    "testMatch": [
+      "**/__tests__/**/*.test.ts?(x)"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg))"
+    ]
   },
   "dependencies": {
     "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
     "@expo/vector-icons": "^15.0.3",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/native": "^7.1.8",
     "@supabase/supabase-js": "^2.101.1",
     "expo": "~54.0.33",
