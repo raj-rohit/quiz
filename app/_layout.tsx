@@ -14,6 +14,7 @@ import { ThemeProvider } from '@/src/theme/ThemeProvider';
 import { SettingsProvider } from '@/src/state/SettingsContext';
 import { EntitlementsProvider } from '@/src/state/EntitlementsContext';
 import { ProgressProvider } from '@/src/state/ProgressContext';
+import { PlayerProvider } from '@/src/state/PlayerContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,10 +50,12 @@ export default function RootLayout() {
       <SettingsProvider>
         <EntitlementsProvider>
           <ProgressProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
-            </Stack>
+            <PlayerProvider>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
+              </Stack>
+            </PlayerProvider>
           </ProgressProvider>
         </EntitlementsProvider>
       </SettingsProvider>

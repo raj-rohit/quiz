@@ -5,6 +5,9 @@ import { Screen } from '@/src/components/app/Screen';
 import { GlassSurface } from '@/src/components/ui/GlassSurface';
 import { Avatar } from '@/src/components/app/Avatar';
 import { LanguageSwitcher } from '@/src/components/app/LanguageSwitcher';
+import { NamePrompt } from '@/src/components/app/NamePrompt';
+import { usePlayer } from '@/src/state/PlayerContext';
+import { initials } from '@/src/features/profile/initials';
 import { MaterialIcon, IconName } from '@/src/components/ui/MaterialIcon';
 import { PackCover } from '@/src/components/store/PackCover';
 import { Toast } from '@/src/components/ui/Toast';
@@ -22,7 +25,9 @@ export default function ProfileScreen() {
   const { owned, restore } = useEntitlements();
   const { progress } = useProgress();
   const { catalog } = useCatalog();
+  const { name } = usePlayer();
   const [toast, setToast] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
 
   const ownedPacks = catalog.packs.filter((p) => p.isFree || owned.includes(p.id));
   const stats: { label: string; value: string; icon: IconName }[] = [
@@ -39,14 +44,14 @@ export default function ProfileScreen() {
 
   return (
     <Screen scroll>
-      <View style={styles.identity}>
-        <Avatar size={80} />
-        <Text style={[styles.name, { color: colors.text }]}>{t('profile.name')}</Text>
+      <Pressable style={styles.identity} onPress={() => setEditing(true)}>
+        <Avatar size={80} initials={initials(name)} />
+        <Text style={[styles.name, { color: colors.text }]}>{name ?? t('profile.name')}</Text>
         <View style={styles.subRow}>
           <MaterialIcon name="smartphone" size={13} color={colors.textMuted} />
           <Text style={[styles.sub, { color: colors.textMuted }]}>{t('profile.sub')}</Text>
         </View>
-      </View>
+      </Pressable>
 
       <View style={styles.statsRow}>
         {stats.map((s) => (
@@ -104,6 +109,7 @@ export default function ProfileScreen() {
         </View>
       </View>
       <Toast message={toast} />
+      <NamePrompt visible={editing} onClose={() => setEditing(false)} />
     </Screen>
   );
 }

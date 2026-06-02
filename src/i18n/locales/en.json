@@ -66,7 +66,12 @@
     "settings": "Settings",
     "language": "Language",
     "darkMode": "Dark mode",
-    "privacy": "No account. Your data stays on this device only."
+    "privacy": "No account. Your data stays on this device only.",
+    "askName": "What should we call you?",
+    "namePlaceholder": "Your name",
+    "save": "Save",
+    "skip": "Skip",
+    "welcomeBack": "Welcome back, {{name}}"
   },
   "disclaimer": "All logos and brand names are the property of their respective companies. They are used here solely for educational trivia purposes.",
   "notFound": {

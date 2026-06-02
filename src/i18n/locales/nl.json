@@ -66,7 +66,12 @@
     "settings": "Instellingen",
     "language": "Taal",
     "darkMode": "Donkere modus",
-    "privacy": "Geen account. Je gegevens staan alleen op dit toestel."
+    "privacy": "Geen account. Je gegevens staan alleen op dit toestel.",
+    "askName": "Hoe mogen we je noemen?",
+    "namePlaceholder": "Je naam",
+    "save": "Opslaan",
+    "skip": "Overslaan",
+    "welcomeBack": "Welkom terug, {{name}}"
   },
   "disclaimer": "Alle logo’s en merknamen zijn eigendom van hun respectievelijke bedrijven. Ze worden hier uitsluitend gebruikt voor educatieve trivia-doeleinden.",
   "notFound": {

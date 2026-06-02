@@ -24,4 +24,6 @@ export const KEYS = {
   progress: 'll.progress',
   deck: 'll.deck.cache',
   catalog: 'll.catalog.cache',
+  name: 'll.name',
+  namePrompted: 'll.name.prompted',
 } as const;

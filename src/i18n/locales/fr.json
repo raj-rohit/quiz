@@ -66,7 +66,12 @@
     "settings": "Réglages",
     "language": "Langue",
     "darkMode": "Mode sombre",
-    "privacy": "Aucun compte. Vos données restent sur cet appareil."
+    "privacy": "Aucun compte. Vos données restent sur cet appareil.",
+    "askName": "Comment doit-on t'appeler ?",
+    "namePlaceholder": "Ton nom",
+    "save": "Enregistrer",
+    "skip": "Passer",
+    "welcomeBack": "Bon retour, {{name}}"
   },
   "disclaimer": "Tous les logos et noms de marque appartiennent à leurs sociétés respectives. Ils sont utilisés ici uniquement à des fins de quiz éducatif.",
   "notFound": {

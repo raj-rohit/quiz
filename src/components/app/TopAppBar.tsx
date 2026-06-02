@@ -1,12 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { ACTIVE_BUILD } from '@/src/theme/builds';
 import { fonts } from '@/src/theme/tokens';
+import { usePlayer } from '@/src/state/PlayerContext';
+import { initials } from '@/src/features/profile/initials';
 import { FlagChip } from './FlagChip';
 import { Avatar } from './Avatar';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { NamePrompt } from './NamePrompt';
 
 /** Content height below the status-bar inset. */
 export const TOP_BAR_CONTENT = 56;
@@ -14,6 +17,9 @@ export const TOP_BAR_CONTENT = 56;
 export function TopAppBar() {
   const insets = useSafeAreaInsets();
   const { colors, dark } = useTheme();
+  const { name } = usePlayer();
+  const [editing, setEditing] = useState(false);
+
   return (
     <View style={[styles.bar, { paddingTop: insets.top + 6, height: insets.top + TOP_BAR_CONTENT }]} pointerEvents="box-none">
       <View style={styles.side}>
@@ -22,8 +28,11 @@ export function TopAppBar() {
       </View>
       <View style={styles.side}>
         <LanguageSwitcher />
-        <Avatar />
+        <Pressable onPress={() => setEditing(true)} hitSlop={6}>
+          <Avatar initials={initials(name)} />
+        </Pressable>
       </View>
+      <NamePrompt visible={editing} onClose={() => setEditing(false)} />
     </View>
   );
 }

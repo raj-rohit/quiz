@@ -3,9 +3,10 @@ import { Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { fonts, rgb } from '@/src/theme/tokens';
+import { MaterialIcon } from '@/src/components/ui/MaterialIcon';
 
-/** Gradient circle with initials + accent ring. */
-export function Avatar({ initials = 'JV', size = 36 }: { initials?: string; size?: number }) {
+/** Gradient circle with the player's initials, or a neutral person icon if no name set. */
+export function Avatar({ initials = '', size = 36 }: { initials?: string; size?: number }) {
   const { accent, colors } = useTheme();
   return (
     <LinearGradient
@@ -23,7 +24,11 @@ export function Avatar({ initials = 'JV', size = 36 }: { initials?: string; size
         },
       ]}
     >
-      <Text style={{ color: colors.primary, fontFamily: fonts.extrabold, fontSize: size * 0.36 }}>{initials}</Text>
+      {initials ? (
+        <Text style={{ color: colors.primary, fontFamily: fonts.extrabold, fontSize: size * 0.36 }}>{initials}</Text>
+      ) : (
+        <MaterialIcon name="person" size={size * 0.5} color={colors.primary} />
+      )}
     </LinearGradient>
   );
 }
