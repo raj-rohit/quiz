@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import { radii } from '@/src/theme/tokens';
 
 /**
@@ -15,7 +16,15 @@ export function LogoStage({
 }) {
   return (
     <View style={[styles.stage, { backgroundColor: dominantColor ?? 'transparent' }]}>
-      {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.img} resizeMode="contain" /> : null}
+      {imageUrl ? (
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.img}
+          contentFit="contain"
+          transition={150}
+          cachePolicy="memory-disk"
+        />
+      ) : null}
     </View>
   );
 }

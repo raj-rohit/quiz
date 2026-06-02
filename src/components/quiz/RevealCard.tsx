@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ViewStyle, StyleProp } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle, StyleProp } from 'react-native';
+import { Image } from 'expo-image';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -73,7 +74,9 @@ export function RevealCard({ imageUrl, brandName, founded, scorePct, timeSec, ce
           />
         )}
         <Animated.View style={[styles.tile, tileStyle]}>
-          {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.logo} resizeMode="contain" /> : null}
+          {imageUrl ? (
+            <Image source={{ uri: imageUrl }} style={styles.logo} contentFit="contain" cachePolicy="memory-disk" />
+          ) : null}
         </Animated.View>
       </View>
 

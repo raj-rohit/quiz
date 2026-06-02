@@ -11,6 +11,7 @@ import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import { useProgress } from '@/src/state/ProgressContext';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { ACTIVE_BUILD, BUILDS } from '@/src/theme/builds';
+import { logoUrl } from '@/src/features/quiz/logo';
 
 interface Brand {
   id: string;
@@ -55,14 +56,15 @@ export default function ArenaScreen() {
   }, []);
 
   const current = deck[qIndex];
+  const imageUrl = current ? logoUrl(current.image_url) : undefined;
 
   useEffect(() => {
-    if (!current?.image_url) {
+    if (!imageUrl) {
       setDominant(null);
       return;
     }
     setDominant(null);
-    ImageColors.getColors(current.image_url, { fallback: current.brand_color ?? '#262626', cache: true, key: current.image_url })
+    ImageColors.getColors(imageUrl, { fallback: current?.brand_color ?? '#262626', cache: true, key: imageUrl })
       .then((c) => {
         const color =
           c.platform === 'android' ? c.dominant ?? c.vibrant ?? c.muted :
@@ -72,7 +74,7 @@ export default function ArenaScreen() {
         if (color) setDominant(color);
       })
       .catch(() => {});
-  }, [current?.image_url, current?.brand_color]);
+  }, [imageUrl, current?.brand_color]);
 
   const deckTitle = t(BUILDS[ACTIVE_BUILD].titleKey);
 
@@ -103,7 +105,7 @@ export default function ArenaScreen() {
       <View style={{ height: 24 }} />
       <QuizCard
         key={current.id}
-        imageUrl={current.image_url}
+        imageUrl={imageUrl}
         answer={current.brand_name}
         founded={current.description}
         dominantColor={dominant ?? current.brand_color}
