@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '@/src/components/app/Screen';
@@ -19,7 +19,7 @@ export default function ExploreScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const { catalog, loading } = useCatalog();
+  const { catalog } = useCatalog();
   const { owned, buy, restore } = useEntitlements();
   const { progress } = useProgress();
   const [target, setTarget] = useState<PurchaseTarget | null>(null);
@@ -39,14 +39,6 @@ export default function ExploreScreen() {
     if (tg.kind === 'bundle') buy(tg.bundle.id, paid, true);
     else buy(tg.pack.id, paid, false);
   };
-
-  if (loading) {
-    return (
-      <Screen center>
-        <ActivityIndicator color={colors.primary} />
-      </Screen>
-    );
-  }
 
   return (
     <Screen scroll>

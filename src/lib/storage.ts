@@ -22,4 +22,6 @@ export const KEYS = {
   dark: 'll.dark',
   owned: 'll.owned',
   progress: 'll.progress',
+  deck: 'll.deck.cache',
+  catalog: 'll.catalog.cache',
 } as const;

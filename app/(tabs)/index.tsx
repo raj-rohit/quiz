@@ -7,6 +7,7 @@ import { SectionHeader } from '@/src/components/quiz/SectionHeader';
 import { QuizCard } from '@/src/components/quiz/QuizCard';
 import { ProgressStrip } from '@/src/components/quiz/ProgressStrip';
 import { supabase } from '@/src/lib/supabase';
+import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import { useProgress } from '@/src/state/ProgressContext';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { ACTIVE_BUILD, BUILDS } from '@/src/theme/builds';
@@ -31,10 +32,21 @@ export default function ArenaScreen() {
 
   useEffect(() => {
     let active = true;
+    // Instant: render the last cached deck so the quiz appears immediately.
+    loadJSON<Brand[]>(KEYS.deck, []).then((cached) => {
+      if (active && cached.length) {
+        setDeck(cached);
+        setLoading(false);
+      }
+    });
+    // Background: refresh from Supabase and update the cache.
     (async () => {
       const { data } = await supabase.from('quiz_brands').select('*').eq('is_active', true);
       if (!active) return;
-      if (data) setDeck(data as Brand[]);
+      if (data && data.length) {
+        setDeck(data as Brand[]);
+        saveJSON(KEYS.deck, data);
+      }
       setLoading(false);
     })();
     return () => {
