@@ -27,6 +27,8 @@ const MAP = {
   bolt: 'bolt',
   workspace_premium: 'workspace-premium',
   arrow_forward: 'arrow-forward',
+  arrow_back: 'arrow-back',
+  science: 'science',
   restaurant: 'restaurant',
   graphic_eq: 'graphic-eq',
   sports_soccer: 'sports-soccer',

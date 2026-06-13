@@ -18,12 +18,13 @@ export interface QuizCardProps {
   answer: string;
   founded?: string;
   dominantColor?: string | null;
+  obfuscationType?: string | null;
   onComplete: (result: { correct: boolean; timeSec: number }) => void;
 }
 
 /** The glass quiz card. Fixed min-height + centered content prevents layout shift
  *  between guess and reveal states (REQUIRED). Keyed by question by the screen. */
-export function QuizCard({ imageUrl, answer, founded, dominantColor, onComplete }: QuizCardProps) {
+export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscationType, onComplete }: QuizCardProps) {
   const { t } = useTranslation();
   const { submitGuess } = useQuiz(answer);
   const [guess, setGuess] = useState('');
@@ -78,7 +79,7 @@ export function QuizCard({ imageUrl, answer, founded, dominantColor, onComplete 
         />
       ) : (
         <View>
-          <LogoStage imageUrl={imageUrl} dominantColor={dominantColor} />
+          <LogoStage imageUrl={imageUrl} dominantColor={dominantColor} obfuscationType={obfuscationType} />
           <View style={styles.controls}>
             <GuessInput
               value={guess}

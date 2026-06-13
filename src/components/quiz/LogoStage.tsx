@@ -1,42 +1,20 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { radii } from '@/src/theme/tokens';
+import { RevealStage } from './RevealStage';
 
 /**
- * 16:10 logo area. The real brand logo (Supabase) sits on its own dominant-color
- * tile and is contained full-bleed — no black box (per the client's feedback).
+ * 16:10 logo area for the quiz. Delegates to the reveal engine: a brand tagged
+ * with an `obfuscation_type` is obscured with that mode (at the mode's fixed
+ * level); brands with `none` (the default) show their logo in full. On reveal /
+ * give-up the RevealCard shows the full answer.
  */
 export function LogoStage({
   imageUrl,
   dominantColor,
+  obfuscationType = 'none',
 }: {
   imageUrl?: string | null;
   dominantColor?: string | null;
+  obfuscationType?: string | null;
 }) {
-  return (
-    <View style={[styles.stage, { backgroundColor: dominantColor ?? 'transparent' }]}>
-      {imageUrl ? (
-        <Image
-          source={{ uri: imageUrl }}
-          style={styles.img}
-          contentFit="contain"
-          transition={150}
-          cachePolicy="memory-disk"
-        />
-      ) : null}
-    </View>
-  );
+  return <RevealStage imageUrl={imageUrl} mode={obfuscationType} dominantColor={dominantColor} />;
 }
-
-const styles = StyleSheet.create({
-  stage: {
-    width: '100%',
-    aspectRatio: 16 / 10,
-    borderRadius: radii.stage,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  img: { width: '100%', height: '100%' },
-});
