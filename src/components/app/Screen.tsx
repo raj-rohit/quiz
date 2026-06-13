@@ -26,6 +26,7 @@ export function Screen({ children, scroll = false, center = false, contentStyle 
           contentContainerStyle={[{ paddingTop, paddingBottom, paddingHorizontal: 16 }, contentStyle]}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          alwaysBounceVertical={false}
         >
           {children}
         </ScrollView>

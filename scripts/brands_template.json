@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Coca-Cola",
+    "image": "https://unavatar.io/twitter/CocaCola",
+    "desc": "The iconic carbonated soft drink brand.",
+    "color": "#F40009",
+    "pack": "food",
+    "obfuscation": "none"
+  },
+  {
+    "name": "Adidas",
+    "image": "https://unavatar.io/twitter/adidas",
+    "desc": "Famous German multinational athletic footwear and apparel brand.",
+    "color": "#000000",
+    "pack": "sport",
+    "obfuscation": "none"
+  },
+  {
+    "name": "Nintendo",
+    "image": "https://unavatar.io/twitter/Nintendo",
+    "desc": "A legendary video game company based in Kyoto, Japan.",
+    "color": "#E60012",
+    "pack": "retro",
+    "obfuscation": "grayscale"
+  },
+  {
+    "name": "Philips",
+    "image": "./philips_shield.png",
+    "desc": {
+      "en": "Famous for inventing the audio cassette tape in 1963 and co-developing the Compact Disc (CD) in 1982.",
+      "nl": "Beroemd om de uitvinding van de cassetteband in 1963 en de co-ontwikkeling van de Compact Disc (CD) in 1982.",
+      "fr": "Célèbre pour avoir inventé la cassette audio en 1963 et co-développé le disque compact (CD) en 1982.",
+      "de": "Bekannt für die Erfindung der Audiokassette im Jahr 1963 und die Mitentwicklung der Compact Disc (CD) im Jahr 1982."
+    },
+    "color": "#0b5fa5",
+    "pack": "classics",
+    "obfuscation": "none"
+  },
+  {
+    "name": "KLM",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/KLM_crown_logo.svg/512px-KLM_crown_logo.svg.png",
+    "desc": {
+      "en": "Founded in 1919, it is the oldest airline in the world still operating under its original name.",
+      "nl": "Opgericht in 1919, het is de oudste luchtvaartmaatschappij ter wereld die nog onder haar oorspronkelijke naam opereert.",
+      "fr": "Fondée en 1919, c'est la plus ancienne compagnie aérienne au monde à opérer sous son nom d'origine.",
+      "de": "Gegründet im Jahr 1919 ist sie die älteste Fluggesellschaft der Welt, die noch unter ihrem ursprünglichen Namen operiert."
+    },
+    "color": "#00a1de",
+    "pack": "classics",
+    "obfuscation": "none"
+  }
+]

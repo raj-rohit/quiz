@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import ImageColors from 'react-native-image-colors';
+import { requireOptionalNativeModule } from 'expo-modules-core';
 import { Screen } from '@/src/components/app/Screen';
 import { SectionHeader } from '@/src/components/quiz/SectionHeader';
 import { QuizCard } from '@/src/components/quiz/QuizCard';
@@ -13,13 +13,20 @@ import { useTheme } from '@/src/theme/ThemeProvider';
 import { ACTIVE_BUILD, BUILDS } from '@/src/theme/builds';
 import { logoUrl } from '@/src/features/quiz/logo';
 
+// react-native-image-colors ships a native module that's absent in Expo Go.
+// Probe for it without throwing; only require the library when it's present,
+// otherwise Metro's module-load guard surfaces a fatal error overlay even
+// when the require is wrapped in try/catch.
+const imageColorsAvailable = requireOptionalNativeModule('ImageColors') != null;
+
 interface Brand {
   id: string;
   brand_name: string;
   image_url: string;
-  description: string;
+  description: any;
   brand_color?: string | null;
   pack_id?: string | null;
+  obfuscation_type?: string | null;
 }
 
 export default function ArenaScreen() {
@@ -58,22 +65,56 @@ export default function ArenaScreen() {
   const current = deck[qIndex];
   const imageUrl = current ? logoUrl(current.image_url) : undefined;
 
+  const { i18n } = useTranslation();
+  const locale = i18n.language || 'en';
+
+  const resolvedDescription = (() => {
+    if (!current) return undefined;
+    const desc = current.description;
+    if (!desc) return undefined;
+    
+    if (typeof desc === 'object') {
+      return (desc as any)[locale] || (desc as any)['en'] || (desc as any)[Object.keys(desc)[0]] || '';
+    }
+    
+    try {
+      const parsed = JSON.parse(desc);
+      if (parsed && typeof parsed === 'object') {
+        return parsed[locale] || parsed['en'] || parsed[Object.keys(parsed)[0]] || '';
+      }
+    } catch (e) {
+      // Ignore and treat as plain string
+    }
+    
+    return desc;
+  })();
+
   useEffect(() => {
-    if (!imageUrl) {
+    if (!imageUrl || !imageColorsAvailable) {
       setDominant(null);
       return;
     }
     setDominant(null);
-    ImageColors.getColors(imageUrl, { fallback: current?.brand_color ?? '#262626', cache: true, key: imageUrl })
-      .then((c) => {
+    let cancelled = false;
+    (async () => {
+      try {
+        // Safe to require now: the native module is confirmed present.
+        const ImageColors = require('react-native-image-colors').default;
+        const c = await ImageColors.getColors(imageUrl, { fallback: current?.brand_color ?? '#262626', cache: true, key: imageUrl });
+        if (cancelled) return;
         const color =
           c.platform === 'android' ? c.dominant ?? c.vibrant ?? c.muted :
           c.platform === 'ios' ? c.background :
           c.platform === 'web' ? c.dominant :
           null;
         if (color) setDominant(color);
-      })
-      .catch(() => {});
+      } catch {
+        // Native module unavailable (e.g. Expo Go) → keep the brand-color fallback.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [imageUrl, current?.brand_color]);
 
   const deckTitle = t(BUILDS[ACTIVE_BUILD].titleKey);
@@ -107,8 +148,9 @@ export default function ArenaScreen() {
         key={current.id}
         imageUrl={imageUrl}
         answer={current.brand_name}
-        founded={current.description}
+        founded={resolvedDescription}
         dominantColor={dominant ?? current.brand_color}
+        obfuscationType={current.obfuscation_type}
         onComplete={onComplete}
       />
       <View style={{ height: 20 }} />
@@ -116,3 +158,4 @@ export default function ArenaScreen() {
     </Screen>
   );
 }
+

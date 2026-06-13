@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Origin Quiz Game</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0e0e0e;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 159, 74, 0.3);
+        }
+        .mesh-gradient {
+            background: radial-gradient(at 0% 0%, rgba(255, 159, 74, 0.15) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(12, 182, 253, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 50% 50%, rgba(255, 140, 0, 0.05) 0px, transparent 50%);
+        }
+        .btn-3d-gradient {
+            background: linear-gradient(45deg, #FF8C00, #B92902);
+            box-shadow: 0 4px 15px rgba(185, 41, 2, 0.4);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error-container": "#b92902",
+                      "secondary-fixed": "#a1d8ff",
+                      "surface-tint": "#ff9f4a",
+                      "on-error": "#450900",
+                      "primary-fixed": "#fd8b00",
+                      "primary": "#ff9f4a",
+                      "error-dim": "#d53d18",
+                      "tertiary-fixed": "#6bfe9c",
+                      "on-primary-fixed": "#180800",
+                      "secondary-dim": "#00a8eb",
+                      "inverse-on-surface": "#565555",
+                      "inverse-surface": "#fcf9f8",
+                      "on-secondary": "#003046",
+                      "tertiary-container": "#6bfe9c",
+                      "on-surface-variant": "#adaaaa",
+                      "on-tertiary-container": "#005f2f",
+                      "surface": "#0e0e0e",
+                      "tertiary-dim": "#5bef90",
+                      "surface-dim": "#0e0e0e",
+                      "on-secondary-container": "#f3f8ff",
+                      "secondary": "#0cb6fd",
+                      "primary-fixed-dim": "#ea8000",
+                      "on-primary": "#532a00",
+                      "surface-container-high": "#1f2020",
+                      "on-tertiary-fixed-variant": "#006a35",
+                      "tertiary": "#c3ffcd",
+                      "on-tertiary-fixed": "#004a23",
+                      "tertiary-fixed-dim": "#5bef90",
+                      "surface-bright": "#2c2c2c",
+                      "primary-container": "#fd8b00",
+                      "error": "#ff7351",
+                      "on-surface": "#ffffff",
+                      "secondary-fixed-dim": "#7eccff",
+                      "on-primary-container": "#442100",
+                      "surface-container-highest": "#262626",
+                      "surface-container": "#191a1a",
+                      "on-tertiary": "#006834",
+                      "outline-variant": "#484848",
+                      "surface-container-lowest": "#000000",
+                      "on-secondary-fixed-variant": "#00567b",
+                      "secondary-container": "#00658f",
+                      "on-secondary-fixed": "#003852",
+                      "surface-variant": "#262626",
+                      "primary-dim": "#ed8200",
+                      "inverse-primary": "#914d00",
+                      "on-background": "#ffffff",
+                      "background": "#0e0e0e",
+                      "surface-container-low": "#131313",
+                      "outline": "#767575",
+                      "on-primary-fixed-variant": "#512800",
+                      "on-error-container": "#ffd2c8"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "body": ["Plus Jakarta Sans"],
+                      "label": ["Plus Jakarta Sans"]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 w-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border-b border-orange-500/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-orange-500">menu</span>
+<span class="text-2xl font-black italic tracking-tighter text-orange-500 font-plus-jakarta-sans tracking-tight font-bold">ORIGIN</span>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-orange-500/50 overflow-hidden active:scale-95 transition-transform cursor-pointer">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo4QmsbmUAeq66x02bXsNzLs9mhD-zH2Zwg6oEkrMU4FCf5IxsDBGzmtWRVf5RW9rY7aANLltwZAIBOiLm_PLQFXY_4HnU9CUBbdDsEcXg-XFdPyUlL7XIKK9HrFicdeelYpV6smDd2AOJj52J9r12VMTsTNqETN8YmKNmJd8OhTaeZa2tLTsUWottWdGaMv7n1fJsoiytmAtWCcrNxnN02eop_JsCuOjw_p6S_G65TZgy9-EjxG9ro3zqFVVKx47qI1lavydYx0JG"/>
+</div>
+</header>
+<main class="flex-grow relative mesh-gradient px-6 py-12 flex flex-col items-center justify-center">
+<!-- Background Decorative Element -->
+<div class="fixed inset-0 z-0 overflow-hidden mesh-gradient opacity-40 pointer-events-none">
+<div class="p-8 max-w-lg mx-auto space-y-8 grayscale">
+<div class="h-12 w-full bg-surface-container-high rounded-full opacity-20"></div>
+<div class="grid grid-cols-2 gap-4 opacity-10">
+<div class="h-40 bg-surface-container-high rounded-lg"></div>
+<div class="h-40 bg-surface-container-high rounded-lg"></div>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-0 overflow-hidden mesh-gradient opacity-40 pointer-events-none">
+<div class="p-8 max-w-lg mx-auto space-y-8 grayscale">
+<div class="h-12 w-full bg-surface-container-high rounded-full opacity-20"></div>
+<div class="grid grid-cols-2 gap-4 opacity-10">
+<div class="h-40 bg-surface-container-high rounded-lg"></div>
+<div class="h-40 bg-surface-container-high rounded-lg"></div>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<div class="text-center mb-12 animate-in fade-in duration-700 z-10">
+<span class="inline-block px-4 py-1.5 rounded-full bg-secondary text-on-surface text-xs font-extrabold tracking-widest uppercase mb-4 shadow-[0_0_15px_rgba(12,182,253,0.3)]">
+                Chapter 01
+            </span>
+<h2 class="text-5xl md:text-7xl font-extrabold text-primary tracking-tighter drop-shadow-xl">
+                Dutch Classics
+            </h2>
+</div>
+<!-- Variation 3: More pronounced glassmorphism and glow effects -->
+<div class="w-full max-w-2xl relative group z-10">
+<!-- Glow Effect -->
+<div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+<div class="victory-card relative rounded-lg p-10 flex flex-col items-center shadow-2xl overflow-hidden bg-white/5 backdrop-blur-[40px] border border-orange-500/20">
+<!-- Question Image (The Logo) -->
+<div class="w-full aspect-video rounded-xl overflow-hidden bg-surface-container-highest mb-10 border border-white/10 group-hover:scale-[1.02] transition-transform duration-500">
+<img alt="Guess the brand logo" class="w-full h-full object-cover grayscale brightness-125 contrast-125" data-alt="abstract minimalist black and white geometric logo on a clean studio background with soft dramatic shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_HFfBnMkywlskW6MbsgMrV711dqZ2mOWuxLcVizvsPDzHRqujMzAMLbIqIEuy3-HmoIeQSvAkodFlhm1kZcnq6sQih7aakdsRK2ldkWFIiy90EmsECJDLmoteuchiwpRTXrT0ZxcMH_NJ5G8PfoTPISqwqJKUSZ_rAR72KbK9MZNJ7WZWBro9vP86XsG02DBYhEjtvOSJZ6LSdPgAiNLf_MsHjzKA8Bb3uzOVxgufxc42__pQGnEqfbE-VGnOppUG59kNwiLk4HOt"/>
+</div>
+<!-- Input Section -->
+<div class="w-full max-w-md space-y-8">
+<div class="relative">
+<input class="w-full bg-transparent border-0 border-b-2 border-outline-variant py-4 px-2 text-xl font-medium focus:ring-0 focus:border-primary transition-all placeholder:text-on-surface-variant/50 text-center" placeholder="Guess the brand..." type="text"/>
+</div>
+<div class="flex flex-col gap-4">
+<button class="btn-3d-gradient w-full py-5 rounded-full text-white font-extrabold text-lg tracking-wider uppercase active:scale-95 transition-all hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(185,41,2,0.6)]">
+                            Check
+                        </button>
+<button class="text-on-surface-variant text-sm font-bold uppercase tracking-widest hover:text-secondary transition-colors py-2 active:scale-95">
+                            I don't know
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Quiz Metadata / Progress (Asymmetric Placement) -->
+<div class="w-full max-w-2xl mt-12 flex justify-between items-end">
+<div class="space-y-1">
+<p class="text-on-surface-variant text-[10px] uppercase tracking-[0.2em] font-bold">Progress</p>
+<div class="h-1.5 w-32 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full w-1/3 bg-secondary"></div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-primary text-4xl font-black">01<span class="text-on-surface-variant text-lg">/12</span></p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-[2rem] border-t border-orange-500/30 bg-white/5 dark:bg-black/10 backdrop-blur-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex justify-around items-center h-20 pb-safe px-4">
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:text-cyan-400 transition-colors active:scale-90 duration-300 cursor-pointer">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-bold uppercase tracking-widest font-plus-jakarta-sans mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-orange-400 bg-orange-500/10 rounded-full py-2 px-4 shadow-[0_0_15px_rgba(255,159,74,0.3)] active:scale-90 transition-all duration-300 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="text-[10px] font-bold uppercase tracking-widest font-plus-jakarta-sans mt-1">Arena</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:text-cyan-400 transition-colors active:scale-90 duration-300 cursor-pointer">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="text-[10px] font-bold uppercase tracking-widest font-plus-jakarta-sans mt-1">Rankings</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:text-cyan-400 transition-colors active:scale-90 duration-300 cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase tracking-widest font-plus-jakarta-sans mt-1">Profile</span>
+</div>
+</nav>
+</body></html>
