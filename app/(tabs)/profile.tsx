@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'expo-router';
 import { Screen } from '@/src/components/app/Screen';
 import { GlassSurface } from '@/src/components/ui/GlassSurface';
 import { Avatar } from '@/src/components/app/Avatar';
@@ -20,6 +21,7 @@ import { fonts } from '@/src/theme/tokens';
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { colors, dark, toggleDark } = useTheme();
   const { locale } = useSettings();
   const { owned, restore } = useEntitlements();
@@ -45,7 +47,7 @@ export default function ProfileScreen() {
   return (
     <Screen scroll>
       <Pressable style={styles.identity} onPress={() => setEditing(true)}>
-        <Avatar size={80} initials={initials(name)} />
+        <Avatar size={72} initials={initials(name)} />
         <Text style={[styles.name, { color: colors.text }]}>{name ?? t('profile.name')}</Text>
         <View style={styles.subRow}>
           <MaterialIcon name="smartphone" size={13} color={colors.textMuted} />
@@ -84,7 +86,7 @@ export default function ProfileScreen() {
           </View>
           <LanguageSwitcher />
         </View>
-        <View style={styles.settingRow}>
+        <View style={[styles.settingRow, styles.divider, { borderBottomColor: dark ? 'rgba(255,255,255,0.08)' : 'rgba(26,28,28,0.06)' }]}>
           <View style={styles.settingLabel}>
             <MaterialIcon name="dark_mode" size={19} color={colors.primary} />
             <Text style={[styles.settingText, { color: colors.text }]}>{t('profile.darkMode')}</Text>
@@ -93,6 +95,13 @@ export default function ProfileScreen() {
             <View style={[styles.knob, { transform: [{ translateX: dark ? 20 : 0 }] }]} />
           </Pressable>
         </View>
+        <Pressable style={styles.settingRow} onPress={() => router.push('/lab' as any)}>
+          <View style={styles.settingLabel}>
+            <MaterialIcon name="science" size={19} color={colors.primary} />
+            <Text style={[styles.settingText, { color: colors.text }]}>Logo Lab</Text>
+          </View>
+          <MaterialIcon name="arrow_forward" size={18} color={colors.textFaint} />
+        </Pressable>
       </GlassSurface>
 
       <View style={styles.footer}>
@@ -115,26 +124,26 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  identity: { alignItems: 'center', marginTop: 8, marginBottom: 24 },
-  name: { fontFamily: fonts.extrabold, fontSize: 20, letterSpacing: -0.3, marginTop: 12 },
+  identity: { alignItems: 'center', marginTop: 4, marginBottom: 14 },
+  name: { fontFamily: fonts.extrabold, fontSize: 20, letterSpacing: -0.3, marginTop: 8 },
   subRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
   sub: { fontFamily: fonts.medium, fontSize: 11 },
   statsRow: { flexDirection: 'row', gap: 10, marginBottom: 8 },
   statFlex: { flex: 1 },
-  statTile: { alignItems: 'center', gap: 4, paddingVertical: 14 },
+  statTile: { alignItems: 'center', gap: 4, paddingVertical: 12 },
   statValue: { fontFamily: fonts.extrabold, fontSize: 18, letterSpacing: -0.3 },
   statLabel: { fontFamily: fonts.bold, fontSize: 9, letterSpacing: 1, textTransform: 'uppercase' },
-  sectionLabel: { fontFamily: fonts.bold, fontSize: 10, letterSpacing: 2.2, textTransform: 'uppercase', marginTop: 20, marginBottom: 10 },
+  sectionLabel: { fontFamily: fonts.bold, fontSize: 10, letterSpacing: 2.2, textTransform: 'uppercase', marginTop: 14, marginBottom: 8 },
   packsRow: { gap: 10, paddingVertical: 2 },
   packItem: { width: 68, alignItems: 'center', gap: 6 },
   packTitle: { fontFamily: fonts.bold, fontSize: 9, textAlign: 'center', width: '100%' },
-  settingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14 },
+  settingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 11 },
   divider: { borderBottomWidth: 1 },
   settingLabel: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   settingText: { fontFamily: fonts.bold, fontSize: 13 },
   track: { width: 48, height: 28, borderRadius: 9999, padding: 2, justifyContent: 'center' },
   knob: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#ffffff' },
-  footer: { alignItems: 'center', gap: 8, marginTop: 28 },
+  footer: { alignItems: 'center', gap: 6, marginTop: 16 },
   restore: { fontFamily: fonts.bold, fontSize: 12 },
   footRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: 6, maxWidth: 300 },
   privacy: { fontFamily: fonts.medium, fontSize: 10, flexShrink: 1 },
