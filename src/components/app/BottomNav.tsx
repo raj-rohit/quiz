@@ -43,7 +43,14 @@ export function BottomNav({ state, navigation }: BottomNavProps) {
     <View
       style={[
         styles.wrap,
-        { paddingBottom: insets.bottom + 2, borderTopColor: rgb(accent.rgb, dark ? 0.2 : 0.1) },
+        {
+          // Balance the row inside the visible sheet: match the top gap to the
+          // bottom gap instead of reserving the full safe-area inset below the
+          // icons, while keeping content clear of the home-indicator zone.
+          paddingTop: 12,
+          paddingBottom: Math.max(insets.bottom - 16, 12),
+          borderTopColor: rgb(accent.rgb, dark ? 0.2 : 0.1),
+        },
       ]}
     >
       <BlurView intensity={dark ? 40 : 30} tint={dark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
@@ -52,23 +59,23 @@ export function BottomNav({ state, navigation }: BottomNavProps) {
         {ORDER.map((item) => {
           const route = state.routes.find((r) => r.name === item.name);
           const active = item.name === focusedName;
-          if (active) {
-            return (
-              <Pressable
-                key={item.name}
-                onPress={() => press(route, item.name)}
-                style={[styles.activePill, { backgroundColor: colors.primary, shadowColor: colors.primary }]}
-              >
-                <MaterialIcon name={item.icon} size={22} color="#ffffff" />
-                <Text style={styles.activeLabel}>{t(item.labelKey)}</Text>
-              </Pressable>
-            );
-          }
           return (
-            <Pressable key={item.name} onPress={() => press(route, item.name)} style={styles.item}>
-              <MaterialIcon name={item.icon} size={22} color={colors.textFaint} />
-              <Text style={[styles.label, { color: colors.textFaint }]}>{t(item.labelKey)}</Text>
-            </Pressable>
+            <View key={item.name} style={styles.slot}>
+              {active ? (
+                <Pressable
+                  onPress={() => press(route, item.name)}
+                  style={[styles.activePill, { backgroundColor: colors.primary, shadowColor: colors.primary }]}
+                >
+                  <MaterialIcon name={item.icon} size={22} color="#ffffff" />
+                  <Text style={styles.activeLabel}>{t(item.labelKey)}</Text>
+                </Pressable>
+              ) : (
+                <Pressable onPress={() => press(route, item.name)} style={styles.item}>
+                  <MaterialIcon name={item.icon} size={22} color={colors.textFaint} />
+                  <Text style={[styles.label, { color: colors.textFaint }]}>{t(item.labelKey)}</Text>
+                </Pressable>
+              )}
+            </View>
           );
         })}
       </View>
@@ -83,13 +90,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 40,
-    paddingTop: 6,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
     overflow: 'hidden',
   },
-  row: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 12 },
+  row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 },
+  slot: { flex: 1, alignItems: 'center' },
   item: { alignItems: 'center', justifyContent: 'center', paddingVertical: 5, paddingHorizontal: 8, gap: 2 },
   activePill: {
     alignItems: 'center',
