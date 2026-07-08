@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, Keyboard, Platform, Pressable, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, Keyboard, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { requireOptionalNativeModule } from 'expo-modules-core';
 import { Screen } from '@/src/components/app/Screen';
@@ -7,7 +7,6 @@ import { SectionHeader } from '@/src/components/quiz/SectionHeader';
 import { QuizCard } from '@/src/components/quiz/QuizCard';
 import { RoundSummary } from '@/src/components/quiz/RoundSummary';
 import { ProgressStrip } from '@/src/components/quiz/ProgressStrip';
-import { MaterialIcon } from '@/src/components/ui/MaterialIcon';
 import { supabase } from '@/src/lib/supabase';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import { useProgress } from '@/src/state/ProgressContext';
@@ -183,18 +182,12 @@ export function PackRound({ pack, onExit }: Props) {
     return (
       <Screen center>
         <SectionHeader title={packTitle} />
-        <Pressable onPress={onExit} style={styles.backLink} hitSlop={8}>
-          <MaterialIcon name="arrow_back" size={18} color={colors.textMuted} />
-        </Pressable>
       </Screen>
     );
   }
 
   return (
     <Screen scroll contentStyle={{ flexGrow: 1 }}>
-      <Pressable onPress={onExit} style={styles.back} hitSlop={8}>
-        <MaterialIcon name="arrow_back" size={22} color={colors.textMuted} />
-      </Pressable>
       <View style={{ flexGrow: 1, justifyContent: 'center', paddingTop: 20, paddingBottom: 20 + kbHeight }}>
         {finished ? (
           <RoundSummary
@@ -226,8 +219,3 @@ export function PackRound({ pack, onExit }: Props) {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  back: { alignSelf: 'flex-start', padding: 4, marginBottom: -8 },
-  backLink: { marginTop: 16 },
-});
