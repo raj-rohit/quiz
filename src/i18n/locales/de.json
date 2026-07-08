@@ -13,6 +13,7 @@
     "progress": "Fortschritt",
     "next": "Nächste Aufgabe",
     "score": "Punkte",
+    "pts": "Pkt.",
     "roundComplete": "Runde geschafft!",
     "roundCorrect": "{{correct}} von {{total}} richtig",
     "playAgain": "Nochmal spielen",

@@ -13,6 +13,7 @@
     "progress": "Progress",
     "next": "Next Challenge",
     "score": "Score",
+    "pts": "pts",
     "roundComplete": "Round complete!",
     "roundCorrect": "{{correct}} of {{total}} correct",
     "playAgain": "Play again",
