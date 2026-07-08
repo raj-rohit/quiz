@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import { Image, ImageStyle } from 'expo-image';
 import { radii } from '@/src/theme/tokens';
-import { resolveMode, clampReveal, obscureLevel, RevealModeId } from '@/src/features/quiz/reveal';
+import { resolveMode, clampReveal, brandObscureLevel, RevealModeId } from '@/src/features/quiz/reveal';
 
 /**
  * The logo reveal/obfuscation engine (ported from logo-lab.html).
@@ -22,8 +22,10 @@ import { resolveMode, clampReveal, obscureLevel, RevealModeId } from '@/src/feat
 export interface RevealStageProps {
   imageUrl?: string | null;
   mode?: string | null;
-  /** 0 hidden → 1 shown. Omit to use the mode's fixed obscure level. */
+  /** 0 hidden → 1 shown. Omit to use the brand's / mode's obscure level. */
   reveal?: number;
+  /** Brand's `start_reveal` column — per-brand difficulty override. */
+  startReveal?: unknown;
   /** Brand's signature colour — used by `color` and as the stage backdrop. */
   dominantColor?: string | null;
   radius?: number;
@@ -63,9 +65,9 @@ function hashString(str: string): number {
   return h >>> 0;
 }
 
-export function RevealStage({ imageUrl, mode, reveal, dominantColor, radius = radii.stage, style }: RevealStageProps) {
+export function RevealStage({ imageUrl, mode, reveal, startReveal, dominantColor, radius = radii.stage, style }: RevealStageProps) {
   const resolved = resolveMode(mode);
-  const r = clampReveal(reveal ?? obscureLevel(resolved));
+  const r = clampReveal(reveal ?? brandObscureLevel(resolved, startReveal));
   const [dims, setDims] = useState<{ w: number; h: number } | null>(null);
 
   const onLayout = (e: LayoutChangeEvent) => {
