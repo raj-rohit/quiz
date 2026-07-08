@@ -31,12 +31,17 @@ export function CategoryPicker({ onStart, onLocked }: Props) {
   const packs = catalog.packs;
   const [lastId, setLastId] = useState<string | null>(null);
   const [override, setOverride] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    loadJSON<string | null>(KEYS.lastPack, null).then(setLastId);
+    loadJSON<string | null>(KEYS.lastPack, null).then((v) => {
+      setLastId(v);
+      setHydrated(true);
+    });
   }, []);
 
-  const selectedId = override ?? resolveLastPack(lastId, packs);
+  // No selection until storage has hydrated, so the remembered pack never flickers.
+  const selectedId = hydrated ? override ?? resolveLastPack(lastId, packs) : null;
   const selectedPack = packs.find((p) => p.id === selectedId) ?? null;
   const selectedPlayable = selectedPack ? isPackPlayable(selectedPack, owned) : false;
   const selectedTitle = selectedPack ? selectedPack.title[locale] ?? selectedPack.title.en ?? '' : '';

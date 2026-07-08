@@ -26,6 +26,7 @@ export function CategoryTile({ pack, playable, solved, selected, onPress }: Prop
     <Pressable
       onPress={onPress}
       disabled={empty}
+      accessibilityState={{ selected }}
       style={({ pressed }) => [
         styles.tile,
         {
