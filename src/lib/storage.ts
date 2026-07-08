@@ -26,4 +26,5 @@ export const KEYS = {
   catalog: 'll.catalog.cache',
   name: 'll.name',
   namePrompted: 'll.name.prompted',
+  lastPack: 'll.lastPack',
 } as const;

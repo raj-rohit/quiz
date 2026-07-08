@@ -30,6 +30,11 @@
     "incorrect_message": "Dat is niet helemaal goed.",
     "incorrect_button": "Probeer opnieuw"
   },
+  "category": {
+    "kicker": "Kies je deck",
+    "title": "Kies een categorie",
+    "continue": "Doorgaan"
+  },
   "nav": {
     "explore": "Ontdek",
     "arena": "Arena",

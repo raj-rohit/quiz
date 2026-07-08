@@ -30,6 +30,11 @@
     "incorrect_message": "Das ist nicht ganz richtig.",
     "incorrect_button": "Nochmal versuchen"
   },
+  "category": {
+    "kicker": "Wähle dein Deck",
+    "title": "Kategorie wählen",
+    "continue": "Weiter"
+  },
   "nav": {
     "explore": "Entdecken",
     "arena": "Arena",
