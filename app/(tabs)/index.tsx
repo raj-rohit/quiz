@@ -18,9 +18,14 @@ export default function ArenaScreen() {
   useEffect(() => {
     if (!params.pack) return;
     const pack = catalog.packs.find((p) => p.id === params.pack);
-    if (pack && isPackPlayable(pack, owned)) setSelected(pack);
-    // Clear the param so leaving the round returns to the picker, not straight back in.
-    router.setParams({ pack: '' });
+    if (!pack) return; // catalog may still be hydrating — retry on next dep change
+    if (isPackPlayable(pack, owned)) {
+      setSelected(pack);
+      // Consume the param so leaving the round returns to the picker, not straight back in.
+      router.setParams({ pack: '' });
+    }
+    // Found but locked: leave the param — entitlements may still be hydrating;
+    // if it's genuinely locked the user just stays on the picker.
   }, [params.pack, catalog.packs, owned]);
 
   if (selected) {
