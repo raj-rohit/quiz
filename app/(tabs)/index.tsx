@@ -16,6 +16,7 @@ export default function ArenaScreen() {
 
   // Deep link from Explore (?pack=<id>): open that pack's round when playable.
   useEffect(() => {
+    if (selected) return; // never clobber a live round
     if (!params.pack) return;
     const pack = catalog.packs.find((p) => p.id === params.pack);
     if (!pack) return; // catalog may still be hydrating — retry on next dep change
@@ -26,7 +27,7 @@ export default function ArenaScreen() {
     }
     // Found but locked: leave the param — entitlements may still be hydrating;
     // if it's genuinely locked the user just stays on the picker.
-  }, [params.pack, catalog.packs, owned]);
+  }, [params.pack, catalog.packs, owned, selected]);
 
   if (selected) {
     return <PackRound pack={selected} onExit={() => setSelected(null)} />;
