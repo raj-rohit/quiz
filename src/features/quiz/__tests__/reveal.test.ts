@@ -1,4 +1,4 @@
-import { resolveMode, modeForLogoType, clampReveal, REVEAL_MODES } from '../reveal';
+import { resolveMode, modeForLogoType, clampReveal, brandObscureLevel, OBSCURE_LEVEL, REVEAL_MODES } from '../reveal';
 
 describe('resolveMode', () => {
   it('returns null for empty / none / unknown', () => {
@@ -37,6 +37,41 @@ describe('clampReveal', () => {
     expect(clampReveal(-0.5)).toBe(0);
     expect(clampReveal(1.5)).toBe(1);
     expect(clampReveal(0.42)).toBe(0.42);
+  });
+});
+
+describe('brandObscureLevel', () => {
+  it("falls back to the mode's tuned level when start_reveal is missing", () => {
+    expect(brandObscureLevel('pixelate', null)).toBe(OBSCURE_LEVEL.pixelate);
+    expect(brandObscureLevel('crop', undefined)).toBe(OBSCURE_LEVEL.crop);
+  });
+
+  it("uses the brand's start_reveal when set", () => {
+    expect(brandObscureLevel('pixelate', 0.1)).toBe(0.1);
+    expect(brandObscureLevel('blur', 0.5)).toBe(0.5);
+  });
+
+  it('accepts 0 as an explicit fully-hidden level', () => {
+    expect(brandObscureLevel('pixelate', 0)).toBe(0);
+  });
+
+  it('clamps out-of-range values into [0, 1]', () => {
+    expect(brandObscureLevel('pixelate', 1.5)).toBe(1);
+    expect(brandObscureLevel('pixelate', -0.2)).toBe(0);
+  });
+
+  it('coerces numeric strings from loosely-typed rows', () => {
+    expect(brandObscureLevel('pixelate', '0.25')).toBe(0.25);
+  });
+
+  it('ignores non-numeric garbage and falls back', () => {
+    expect(brandObscureLevel('pixelate', 'hard')).toBe(OBSCURE_LEVEL.pixelate);
+    expect(brandObscureLevel('pixelate', NaN)).toBe(OBSCURE_LEVEL.pixelate);
+  });
+
+  it('shows the logo plainly when there is no mode, regardless of start_reveal', () => {
+    expect(brandObscureLevel(null, 0.1)).toBe(1);
+    expect(brandObscureLevel(null, null)).toBe(1);
   });
 });
 

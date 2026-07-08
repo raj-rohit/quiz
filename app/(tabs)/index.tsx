@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Keyboard, Platform } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { requireOptionalNativeModule } from 'expo-modules-core';
 import { Screen } from '@/src/components/app/Screen';
 import { SectionHeader } from '@/src/components/quiz/SectionHeader';
 import { QuizCard } from '@/src/components/quiz/QuizCard';
+import { RoundSummary } from '@/src/components/quiz/RoundSummary';
 import { ProgressStrip } from '@/src/components/quiz/ProgressStrip';
 import { supabase } from '@/src/lib/supabase';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
@@ -12,6 +14,7 @@ import { useProgress } from '@/src/state/ProgressContext';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { ACTIVE_BUILD, BUILDS } from '@/src/theme/builds';
 import { logoUrl } from '@/src/features/quiz/logo';
+import { isLastQuestion, summarizeRound, RoundResult } from '@/src/features/quiz/round';
 
 // react-native-image-colors ships a native module that's absent in Expo Go.
 // Probe for it without throwing; only require the library when it's present,
@@ -27,16 +30,34 @@ interface Brand {
   brand_color?: string | null;
   pack_id?: string | null;
   obfuscation_type?: string | null;
+  start_reveal?: number | string | null;
 }
 
 export default function ArenaScreen() {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { record } = useProgress();
+  const router = useRouter();
   const [deck, setDeck] = useState<Brand[]>([]);
   const [qIndex, setQIndex] = useState(0);
+  const [results, setResults] = useState<RoundResult[]>([]);
+  const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dominant, setDominant] = useState<string | null>(null);
+  const [kbHeight, setKbHeight] = useState(0);
+
+  // Shrink the centering space by the keyboard height so the card — and its
+  // Check button — lifts above the keyboard instead of hiding behind it.
+  useEffect(() => {
+    const showEvt = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const show = Keyboard.addListener(showEvt, (e) => setKbHeight(e.endCoordinates?.height ?? 0));
+    const hide = Keyboard.addListener(hideEvt, () => setKbHeight(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -121,7 +142,19 @@ export default function ArenaScreen() {
 
   const onComplete = ({ correct, timeSec }: { correct: boolean; timeSec: number }) => {
     record({ packId: current?.pack_id ?? 'classics', correct, timeSec });
-    setQIndex((i) => (deck.length ? (i + 1) % deck.length : 0));
+    setResults((r) => [...r, { correct, timeSec }]);
+    // Last question ends the round (summary screen) instead of wrapping to the first.
+    if (isLastQuestion(qIndex, deck.length)) {
+      setFinished(true);
+    } else {
+      setQIndex((i) => i + 1);
+    }
+  };
+
+  const resetRound = () => {
+    setResults([]);
+    setQIndex(0);
+    setFinished(false);
   };
 
   if (loading) {
@@ -141,20 +174,37 @@ export default function ArenaScreen() {
   }
 
   return (
-    <Screen scroll>
-      <SectionHeader title={deckTitle} />
-      <View style={{ height: 24 }} />
-      <QuizCard
-        key={current.id}
-        imageUrl={imageUrl}
-        answer={current.brand_name}
-        founded={resolvedDescription}
-        dominantColor={dominant ?? current.brand_color}
-        obfuscationType={current.obfuscation_type}
-        onComplete={onComplete}
+    <Screen scroll contentStyle={{ flexGrow: 1 }}>
+      {/* Stretch so the card centers in the leftover height and the progress
+          strip sits just above the bottom nav instead of leaving a dead gap. */}
+      <View style={{ flexGrow: 1, justifyContent: 'center', paddingTop: 20, paddingBottom: 20 + kbHeight }}>
+        {finished ? (
+          <RoundSummary
+            {...summarizeRound(results)}
+            onExit={() => {
+              resetRound();
+              router.replace('/explore');
+            }}
+            onPlayAgain={resetRound}
+          />
+        ) : (
+          <QuizCard
+            key={current.id}
+            imageUrl={imageUrl}
+            answer={current.brand_name}
+            founded={resolvedDescription}
+            dominantColor={dominant ?? current.brand_color}
+            obfuscationType={current.obfuscation_type}
+            startReveal={current.start_reveal}
+            onComplete={onComplete}
+          />
+        )}
+      </View>
+      <ProgressStrip
+        current={finished ? deck.length : qIndex + 1}
+        total={deck.length}
+        label={t('quiz.progress')}
       />
-      <View style={{ height: 20 }} />
-      <ProgressStrip current={qIndex + 1} total={deck.length} label={t('quiz.progress')} />
     </Screen>
   );
 }

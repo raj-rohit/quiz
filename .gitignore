@@ -45,3 +45,6 @@ supabase/.branches/
 /ios
 /android
 .superpowers/
+
+# personal (not part of the app)
+docs/cover_letter_shopware.md

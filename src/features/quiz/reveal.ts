@@ -98,4 +98,16 @@ export function obscureLevel(mode: RevealModeId | null): number {
   return mode ? OBSCURE_LEVEL[mode] : 1;
 }
 
+/**
+ * Per-brand quiz level: the brand's `start_reveal` column (clamped to [0,1])
+ * when it holds a usable number, else the mode's tuned OBSCURE_LEVEL.
+ * No mode → plain logo (1), whatever start_reveal says.
+ */
+export function brandObscureLevel(mode: RevealModeId | null, startReveal?: unknown): number {
+  if (!mode) return 1;
+  const n = typeof startReveal === 'string' ? Number(startReveal) : startReveal;
+  if (typeof n !== 'number' || Number.isNaN(n)) return OBSCURE_LEVEL[mode];
+  return clampReveal(n);
+}
+
 export const clampReveal = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
