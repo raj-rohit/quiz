@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, TextInput, Keyboard, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { GlassSurface } from '@/src/components/ui/GlassSurface';
@@ -7,6 +7,7 @@ import { GhostButton } from '@/src/components/ui/GhostButton';
 import { LogoStage } from './LogoStage';
 import { GuessInput } from './GuessInput';
 import { RevealCard } from './RevealCard';
+import { PointsChip } from './PointsChip';
 import { useQuiz } from '@/src/hooks/useQuiz';
 import { computeScore, normalizeAnswer } from '@/src/features/quiz/score';
 import { radii } from '@/src/theme/tokens';
@@ -19,12 +20,13 @@ export interface QuizCardProps {
   founded?: string;
   dominantColor?: string | null;
   obfuscationType?: string | null;
+  startReveal?: unknown;
   onComplete: (result: { correct: boolean; timeSec: number }) => void;
 }
 
 /** The glass quiz card. Fixed min-height + centered content prevents layout shift
  *  between guess and reveal states (REQUIRED). Keyed by question by the screen. */
-export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscationType, onComplete }: QuizCardProps) {
+export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscationType, startReveal, onComplete }: QuizCardProps) {
   const { t } = useTranslation();
   const { submitGuess } = useQuiz(answer);
   const [guess, setGuess] = useState('');
@@ -35,10 +37,22 @@ export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscation
   const startedAt = useRef(Date.now());
   const inputRef = useRef<TextInput | null>(null);
 
+  const [elapsed, setElapsed] = useState(0);
+
+  // Live clock for the points chip; stops once the answer is revealed.
+  useEffect(() => {
+    if (state === 'revealed') return;
+    const id = setInterval(() => {
+      setElapsed(Math.round((Date.now() - startedAt.current) / 1000));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [state]);
+
+  const livePts = computeScore(elapsed);
+
   const submit = () => {
     if (state !== 'idle' || !guess.trim()) return;
     Keyboard.dismiss();
-    const elapsed = Math.round((Date.now() - startedAt.current) / 1000);
     const correct = submitGuess(guess).success || normalizeAnswer(guess) === normalizeAnswer(answer);
     if (correct) {
       setTimeSec(elapsed);
@@ -49,7 +63,6 @@ export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscation
       setState('wrong');
       setTimeout(() => {
         setState('idle');
-        setGuess('');
         inputRef.current?.focus();
       }, 600);
     }
@@ -58,7 +71,6 @@ export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscation
   const giveUp = () => {
     if (state !== 'idle') return;
     Keyboard.dismiss();
-    const elapsed = Math.round((Date.now() - startedAt.current) / 1000);
     setTimeSec(elapsed);
     setScorePct(0);
     setRevealedBy('give-up');
@@ -79,7 +91,12 @@ export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscation
         />
       ) : (
         <View>
-          <LogoStage imageUrl={imageUrl} dominantColor={dominantColor} obfuscationType={obfuscationType} />
+          <View>
+            <LogoStage imageUrl={imageUrl} dominantColor={dominantColor} obfuscationType={obfuscationType} startReveal={startReveal} />
+            <View style={styles.pointsWrap} pointerEvents="none">
+              <PointsChip pts={livePts} suffix={t('quiz.pts')} decaying={livePts < 100} />
+            </View>
+          </View>
           <View style={styles.controls}>
             <GuessInput
               value={guess}
@@ -104,4 +121,5 @@ const styles = StyleSheet.create({
   content: { padding: 20, minHeight: 432, justifyContent: 'center' },
   controls: { marginTop: 20, gap: 16 },
   buttons: { gap: 8 },
+  pointsWrap: { position: 'absolute', top: 10, right: 10 },
 });
