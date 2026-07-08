@@ -22,6 +22,9 @@ const ORDER: { name: string; labelKey: string; icon: IconName }[] = [
   { name: 'profile', labelKey: 'nav.profile', icon: 'person' },
 ];
 
+/** How much vertical space screens reserve above the safe-area inset so content clears the nav. */
+export const BOTTOM_NAV_CLEARANCE = 78;
+
 /** Custom raised glass tab bar (SPEC §7). Absolute → floats over the scene. */
 export function BottomNav({ state, navigation }: BottomNavProps) {
   const insets = useSafeAreaInsets();
@@ -40,7 +43,7 @@ export function BottomNav({ state, navigation }: BottomNavProps) {
     <View
       style={[
         styles.wrap,
-        { paddingBottom: insets.bottom + 10, borderTopColor: rgb(accent.rgb, dark ? 0.2 : 0.1) },
+        { paddingBottom: insets.bottom + 2, borderTopColor: rgb(accent.rgb, dark ? 0.2 : 0.1) },
       ]}
     >
       <BlurView intensity={dark ? 40 : 30} tint={dark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
@@ -80,21 +83,20 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 40,
-    paddingTop: 10,
+    paddingTop: 6,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
     overflow: 'hidden',
   },
   row: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 12 },
-  item: { alignItems: 'center', justifyContent: 'center', padding: 8, gap: 2 },
+  item: { alignItems: 'center', justifyContent: 'center', paddingVertical: 5, paddingHorizontal: 8, gap: 2 },
   activePill: {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
     paddingHorizontal: 20,
     paddingVertical: 8,
-    marginTop: -6,
     borderRadius: 9999,
     shadowOpacity: 0.45,
     shadowRadius: 18,

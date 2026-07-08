@@ -11,24 +11,29 @@ import { FlagChip } from './FlagChip';
 import { Avatar } from './Avatar';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { NamePrompt } from './NamePrompt';
+import { barHeight, scrimGeometry } from './topBarLayout';
+import { meshTopColor } from '@/src/theme/mesh';
 
-/** Content height below the status-bar inset. */
-export const TOP_BAR_CONTENT = 56;
+export { TOP_BAR_CONTENT } from './topBarLayout';
 
 export function TopAppBar() {
   const insets = useSafeAreaInsets();
-  const { colors, dark } = useTheme();
+  const { colors, dark, accent } = useTheme();
   const { name } = usePlayer();
   const [editing, setEditing] = useState(false);
-  const barHeight = insets.top + TOP_BAR_CONTENT;
+  const scrim = scrimGeometry(insets.top);
+  // Match the mesh backdrop's composited top color so the fade is seamless —
+  // fading the raw bg color leaves a visible dark band over the accent blob.
+  const scrimColor = meshTopColor(dark, accent);
 
   return (
-    <View style={[styles.bar, { paddingTop: insets.top + 6, height: barHeight }]} pointerEvents="box-none">
-      {/* Scrim: hides content scrolling beneath the floating bar, fading out at the bottom edge. */}
+    <View style={[styles.bar, { paddingTop: insets.top + 6, height: barHeight(insets.top) }]} pointerEvents="box-none">
+      {/* Scrim: hides content scrolling beneath the floating bar, fading out
+          exactly where resting content begins so it never dims the body. */}
       <LinearGradient
-        colors={[colors.bg, colors.bg, `${colors.bg}00`]}
-        locations={[0, 0.82, 1]}
-        style={[styles.scrim, { height: barHeight + 24 }]}
+        colors={[scrimColor, scrimColor, `${scrimColor}00`]}
+        locations={scrim.locations}
+        style={[styles.scrim, { height: scrim.height }]}
         pointerEvents="none"
       />
       <View style={styles.side}>

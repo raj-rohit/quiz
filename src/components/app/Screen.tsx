@@ -2,7 +2,8 @@ import React from 'react';
 import { View, ScrollView, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MeshBackground } from '@/src/components/ui/MeshBackground';
-import { TOP_BAR_CONTENT } from './TopAppBar';
+import { contentTopPadding } from './topBarLayout';
+import { BOTTOM_NAV_CLEARANCE } from './BottomNav';
 
 interface Props {
   children: React.ReactNode;
@@ -14,8 +15,8 @@ interface Props {
 /** Shared screen scaffold: mesh backdrop + safe padding clear of the top bar / bottom nav. */
 export function Screen({ children, scroll = false, center = false, contentStyle }: Props) {
   const insets = useSafeAreaInsets();
-  const paddingTop = insets.top + TOP_BAR_CONTENT + 8;
-  const paddingBottom = insets.bottom + 96;
+  const paddingTop = contentTopPadding(insets.top);
+  const paddingBottom = insets.bottom + BOTTOM_NAV_CLEARANCE;
   const inner = [{ paddingTop, paddingBottom, paddingHorizontal: 16 }, center && styles.center, contentStyle];
 
   return (
