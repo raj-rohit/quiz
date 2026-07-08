@@ -41,7 +41,9 @@ export function CategoryTile({ pack, playable, solved, selected = false, price, 
     >
       <View style={styles.topRow}>
         <PackCover cover={pack.cover} icon={pack.icon} size={40} />
-        {!playable && (
+        {playable ? (
+          <MaterialIcon name="check_circle" size={16} color={colors.primary} />
+        ) : (
           <View style={[styles.pricePill, { backgroundColor: dark ? 'rgba(255,255,255,0.1)' : 'rgba(26,28,28,0.07)' }]}>
             <MaterialIcon name="lock" size={12} color={colors.textFaint} />
             {!!price && <Text style={[styles.priceText, { color: colors.text }]}>{price}</Text>}
