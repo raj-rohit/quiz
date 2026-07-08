@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { CategoryPicker } from '@/src/components/quiz/CategoryPicker';
+import { ContinueCard } from '@/src/components/quiz/ContinueCard';
 import { PackRound } from '@/src/components/quiz/PackRound';
 import { useCatalog } from '@/src/features/catalog/useCatalog';
 import { useEntitlements } from '@/src/state/EntitlementsContext';
@@ -34,9 +34,9 @@ export default function ArenaScreen() {
   }
 
   return (
-    <CategoryPicker
+    <ContinueCard
       onStart={(pack) => setSelected(pack)}
-      onLocked={() => router.navigate('/explore')}
+      onBrowse={() => router.navigate('/explore')}
     />
   );
 }
