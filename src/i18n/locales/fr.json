@@ -52,7 +52,13 @@
     "save": "Économisez",
     "regular": "normalement",
     "restore": "Restaurer les achats",
-    "noAccount": "Aucun compte requis · restaurez à tout moment"
+    "noAccount": "Aucun compte requis · restaurez à tout moment",
+    "viewGrid": "Vue grille",
+    "viewList": "Vue liste"
+  },
+  "arena": {
+    "continueKicker": "Reprends la partie",
+    "browse": "Parcourir les catégories"
   },
   "sheet": {
     "title": "Achat unique",

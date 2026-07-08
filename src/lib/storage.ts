@@ -27,4 +27,5 @@ export const KEYS = {
   name: 'll.name',
   namePrompted: 'll.name.prompted',
   lastPack: 'll.lastPack',
+  storeView: 'll.storeView',
 } as const;

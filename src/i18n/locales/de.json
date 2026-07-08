@@ -52,7 +52,13 @@
     "save": "Spare",
     "regular": "normal",
     "restore": "Käufe wiederherstellen",
-    "noAccount": "Kein Konto nötig · jederzeit wiederherstellen"
+    "noAccount": "Kein Konto nötig · jederzeit wiederherstellen",
+    "viewGrid": "Rasteransicht",
+    "viewList": "Listenansicht"
+  },
+  "arena": {
+    "continueKicker": "Weiterspielen",
+    "browse": "Kategorien ansehen"
   },
   "sheet": {
     "title": "Einmaliger Kauf",

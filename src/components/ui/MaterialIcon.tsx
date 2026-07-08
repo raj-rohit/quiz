@@ -33,6 +33,8 @@ const MAP = {
   graphic_eq: 'graphic-eq',
   sports_soccer: 'sports-soccer',
   travel_explore: 'travel-explore',
+  grid_view: 'grid-view',
+  view_list: 'view-list',
 } as const;
 
 export type IconName = keyof typeof MAP;

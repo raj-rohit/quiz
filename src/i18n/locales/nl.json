@@ -52,7 +52,13 @@
     "save": "Bespaar",
     "regular": "normaal",
     "restore": "Aankopen herstellen",
-    "noAccount": "Geen account nodig · herstel altijd"
+    "noAccount": "Geen account nodig · herstel altijd",
+    "viewGrid": "Rasterweergave",
+    "viewList": "Lijstweergave"
+  },
+  "arena": {
+    "continueKicker": "Ga verder",
+    "browse": "Bekijk categorieën"
   },
   "sheet": {
     "title": "Eénmalige aankoop",

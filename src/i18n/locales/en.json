@@ -52,7 +52,13 @@
     "save": "Save",
     "regular": "usually",
     "restore": "Restore purchases",
-    "noAccount": "No account needed · restore anytime"
+    "noAccount": "No account needed · restore anytime",
+    "viewGrid": "Grid view",
+    "viewList": "List view"
+  },
+  "arena": {
+    "continueKicker": "Jump back in",
+    "browse": "Browse categories"
   },
   "sheet": {
     "title": "One-time purchase",
