@@ -50,3 +50,13 @@ export const shadow = {
 
 /** "245 158 11" + alpha → "rgba(245,158,11, a)" */
 export const rgb = (triplet: string, a = 1) => `rgba(${triplet.split(' ').join(',')}, ${a})`;
+
+/** Composite an "r g b" overlay at the given alpha over an opaque #rrggbb base → #rrggbb. */
+export function blendOver(baseHex: string, triplet: string, alpha: number): string {
+  const overlay = triplet.split(' ').map(Number);
+  const out = [0, 1, 2].map((i) => {
+    const base = parseInt(baseHex.slice(1 + i * 2, 3 + i * 2), 16);
+    return Math.round(base * (1 - alpha) + overlay[i] * alpha);
+  });
+  return `#${out.map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}

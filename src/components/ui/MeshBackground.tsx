@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { palette, rgb } from '@/src/theme/tokens';
+import { MESH_ACCENT_ALPHA } from '@/src/theme/mesh';
 
 /**
  * Mesh-gradient backdrop (SPEC §5). RN has no radial gradient, so we approximate
@@ -12,7 +13,7 @@ export function MeshBackground() {
   const { width, height } = useWindowDimensions();
   const blob = Math.max(width, height) * 1.4;
 
-  const accentColor = dark ? rgb(accent.glow, 0.16) : rgb(accent.rgb, 0.08);
+  const accentColor = dark ? rgb(accent.glow, MESH_ACCENT_ALPHA.dark) : rgb(accent.rgb, MESH_ACCENT_ALPHA.light);
   const cyanColor = dark ? rgb('12 182 253', 0.12) : rgb('12 182 253', 0.07);
 
   return (
