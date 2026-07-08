@@ -63,7 +63,6 @@ export function QuizCard({ imageUrl, answer, founded, dominantColor, obfuscation
       setState('wrong');
       setTimeout(() => {
         setState('idle');
-        setGuess('');
         inputRef.current?.focus();
       }, 600);
     }
