@@ -28,6 +28,7 @@ export default function ExploreScreen() {
   const paid = paidIds(catalog);
   const allOwned = paid.length > 0 && paid.every((id) => owned.includes(id));
   const goArena = () => router.navigate('/');
+  const playPack = (packId: string) => router.navigate({ pathname: '/', params: { pack: packId } });
 
   const doRestore = () => {
     const ok = restore();
@@ -57,7 +58,7 @@ export default function ExploreScreen() {
             pack={p}
             owned={owned.includes(p.id)}
             solved={progress.byPack[p.id] ?? 0}
-            onPlay={goArena}
+            onPlay={(pk) => playPack(pk.id)}
             onTry={goArena}
             onBuy={(pk) => setTarget({ kind: 'pack', pack: pk })}
           />
@@ -80,8 +81,10 @@ export default function ExploreScreen() {
         onConfirm={onConfirm}
         onClose={() => setTarget(null)}
         onStart={() => {
+          const justBought = target?.kind === 'pack' ? target.pack.id : null;
           setTarget(null);
-          goArena();
+          if (justBought) playPack(justBought);
+          else goArena();
         }}
       />
       <Toast message={toast} />
