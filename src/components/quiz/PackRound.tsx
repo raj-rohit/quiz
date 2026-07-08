@@ -38,7 +38,7 @@ interface Props {
 
 /** A quiz round scoped to a single pack. */
 export function PackRound({ pack, onExit }: Props) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const { locale } = useSettings();
   const { record } = useProgress();
@@ -55,6 +55,13 @@ export function PackRound({ pack, onExit }: Props) {
   // Remember this pack as the last-played one.
   useEffect(() => {
     saveJSON(KEYS.lastPack, pack.id);
+  }, [pack.id]);
+
+  // Fresh round whenever the pack changes (parent may reuse this instance).
+  useEffect(() => {
+    setResults([]);
+    setQIndex(0);
+    setFinished(false);
   }, [pack.id]);
 
   useEffect(() => {
@@ -86,7 +93,7 @@ export function PackRound({ pack, onExit }: Props) {
         .eq('is_active', true)
         .eq('pack_id', pack.id);
       if (!active) return;
-      if (data) {
+      if (data && data.length) {
         const scoped = filterDeckByPack(data as Brand[], pack.id);
         setDeck(scoped);
         saveJSON(cacheKey, scoped);
