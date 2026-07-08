@@ -10,7 +10,7 @@ import { usePlayer } from '@/src/state/PlayerContext';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 
 export const unstable_settings = {
-  initialRouteName: 'index',
+  initialRouteName: 'explore',
 };
 
 export default function TabLayout() {
