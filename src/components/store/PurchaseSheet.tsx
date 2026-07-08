@@ -20,11 +20,12 @@ interface Props {
   onConfirm: (target: PurchaseTarget) => void;
   onClose: () => void;
   onStart: () => void;
+  onRestore: () => void;
 }
 
 type Phase = 'confirm' | 'processing' | 'done';
 
-export function PurchaseSheet({ target, onConfirm, onClose, onStart }: Props) {
+export function PurchaseSheet({ target, onConfirm, onClose, onStart, onRestore }: Props) {
   const insets = useSafeAreaInsets();
   const { colors, dark, accent } = useTheme();
   const { locale } = useSettings();
@@ -98,6 +99,7 @@ export function PurchaseSheet({ target, onConfirm, onClose, onStart }: Props) {
 
               <View style={styles.cta}>
                 <Pressable
+                  testID="confirm-purchase"
                   onPress={phase === 'confirm' ? go : undefined}
                   disabled={phase === 'processing'}
                   style={{ borderRadius: radii.pill }}
@@ -127,10 +129,16 @@ export function PurchaseSheet({ target, onConfirm, onClose, onStart }: Props) {
                 <Text style={[styles.cancelText, { color: colors.textFaint }]}>{t('sheet.cancel')}</Text>
               </Pressable>
 
-              <View style={styles.hintRow}>
-                <MaterialIcon name="lock_open" size={12} color={colors.textFaint} />
-                <Text style={[styles.noAccount, { color: colors.textFaint }]}>{t('store.noAccount')}</Text>
-              </View>
+              <Pressable
+                testID="restore-purchases"
+                onPress={phase === 'confirm' ? onRestore : undefined}
+                disabled={phase === 'processing'}
+                hitSlop={6}
+                style={styles.hintRow}
+              >
+                <MaterialIcon name="lock_open" size={12} color={colors.secondary} />
+                <Text style={[styles.restoreText, { color: colors.secondary }]}>{t('store.restore')}</Text>
+              </Pressable>
             </>
           )}
         </Animated.View>
@@ -157,7 +165,7 @@ const styles = StyleSheet.create({
   hint: { fontFamily: fonts.medium, fontSize: 11 },
   cancel: { alignItems: 'center', paddingVertical: 8, marginTop: 4 },
   cancelText: { fontFamily: fonts.bold, fontSize: 12, letterSpacing: 1, textTransform: 'uppercase' },
-  noAccount: { fontFamily: fonts.medium, fontSize: 10 },
+  restoreText: { fontFamily: fonts.bold, fontSize: 11 },
   doneWrap: { alignItems: 'center', paddingVertical: 8 },
   doneCircle: { width: 80, height: 80, borderRadius: 40, alignItems: 'center', justifyContent: 'center', marginBottom: 16 },
   doneTitle: { fontFamily: fonts.extrabold, fontSize: 22, letterSpacing: -0.3 },

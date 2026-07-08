@@ -110,17 +110,6 @@ export default function ExploreScreen() {
         ))
       )}
 
-      <View style={styles.footer}>
-        <Pressable onPress={doRestore} hitSlop={6}>
-          <Text style={[styles.restore, { color: colors.secondary }]}>{t('store.restore')}</Text>
-        </Pressable>
-        <View style={styles.footRow}>
-          <MaterialIcon name="lock_open" size={13} color={colors.textFaint} />
-          <Text style={[styles.noAccount, { color: colors.textFaint }]}>{t('store.noAccount')}</Text>
-        </View>
-        <Text style={[styles.disclaimer, { color: colors.textFaint }]}>{t('disclaimer')}</Text>
-      </View>
-
       <PurchaseSheet
         target={target}
         onConfirm={onConfirm}
@@ -130,6 +119,11 @@ export default function ExploreScreen() {
           setTarget(null);
           if (justBought) playPack(justBought);
           else goArena();
+        }}
+        onRestore={() => {
+          // The toast renders behind the Modal sheet, so close the sheet first.
+          setTarget(null);
+          doRestore();
         }}
       />
       <Toast message={toast} />
@@ -144,9 +138,4 @@ const styles = StyleSheet.create({
   title: { fontFamily: fonts.extrabold, fontSize: 26, letterSpacing: -0.5, marginTop: 2 },
   toggle: { width: 38, height: 38, borderRadius: 12, borderWidth: 1, alignItems: 'center', justifyContent: 'center', marginBottom: 2 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12, marginBottom: 12 },
-  footer: { alignItems: 'center', gap: 8, marginTop: 24 },
-  restore: { fontFamily: fonts.bold, fontSize: 12 },
-  footRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  noAccount: { fontFamily: fonts.medium, fontSize: 10 },
-  disclaimer: { fontFamily: fonts.regular, fontSize: 9, lineHeight: 14, textAlign: 'center', maxWidth: 300, marginTop: 4 },
 });
