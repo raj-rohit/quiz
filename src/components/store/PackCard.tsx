@@ -16,7 +16,7 @@ interface Props {
   solved: number;
   onPlay: (p: Pack) => void;
   onBuy: (p: Pack) => void;
-  onTry: (p: Pack) => void;
+  onTry?: (p: Pack) => void;
 }
 
 export function PackCard({ pack, owned, solved, onPlay, onBuy, onTry }: Props) {
@@ -70,7 +70,7 @@ export function PackCard({ pack, owned, solved, onPlay, onBuy, onTry }: Props) {
               <View style={[styles.pricePill, { backgroundColor: dark ? 'rgba(255,255,255,0.1)' : 'rgba(26,28,28,0.07)' }]}>
                 <Text style={[styles.priceText, { color: colors.text }]}>{price}</Text>
               </View>
-              {pack.sample && (
+              {pack.sample && onTry && (
                 <Pressable onPress={() => onTry(pack)} hitSlop={6}>
                   <Text style={[styles.try, { color: colors.secondary }]}>{t('store.tryFree')}</Text>
                 </Pressable>

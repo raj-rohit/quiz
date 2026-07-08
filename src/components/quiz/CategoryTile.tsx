@@ -11,12 +11,14 @@ interface Props {
   pack: Pack;
   playable: boolean;
   solved: number;
-  selected: boolean;
+  selected?: boolean;
+  /** Localized price string; shown on locked tiles. */
+  price?: string;
   onPress: () => void;
 }
 
-/** Compact category tile for the opening picker grid. */
-export function CategoryTile({ pack, playable, solved, selected, onPress }: Props) {
+/** Compact category tile for pack grids (Explore grid view). */
+export function CategoryTile({ pack, playable, solved, selected = false, price, onPress }: Props) {
   const { colors, dark } = useTheme();
   const { locale } = useSettings();
   const title = pack.title[locale] ?? pack.title.en ?? '';
@@ -39,7 +41,12 @@ export function CategoryTile({ pack, playable, solved, selected, onPress }: Prop
     >
       <View style={styles.topRow}>
         <PackCover cover={pack.cover} icon={pack.icon} size={40} />
-        {!playable && <MaterialIcon name="lock" size={16} color={colors.textFaint} />}
+        {!playable && (
+          <View style={[styles.pricePill, { backgroundColor: dark ? 'rgba(255,255,255,0.1)' : 'rgba(26,28,28,0.07)' }]}>
+            <MaterialIcon name="lock" size={12} color={colors.textFaint} />
+            {!!price && <Text style={[styles.priceText, { color: colors.text }]}>{price}</Text>}
+          </View>
+        )}
       </View>
       <Text numberOfLines={1} style={[styles.name, { color: colors.text }]}>{title}</Text>
       <Text style={[styles.meta, { color: colors.textFaint }]}>
@@ -52,6 +59,8 @@ export function CategoryTile({ pack, playable, solved, selected, onPress }: Prop
 const styles = StyleSheet.create({
   tile: { width: '48%', borderRadius: radii.tile, padding: 12, minHeight: 96, justifyContent: 'space-between' },
   topRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  pricePill: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 9999 },
+  priceText: { fontFamily: fonts.extrabold, fontSize: 10 },
   name: { fontFamily: fonts.bold, fontSize: 14, marginTop: 10 },
   meta: { fontFamily: fonts.bold, fontSize: 10, letterSpacing: 0.5, textTransform: 'uppercase', marginTop: 2 },
 });
