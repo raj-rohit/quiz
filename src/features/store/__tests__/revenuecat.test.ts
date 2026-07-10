@@ -12,10 +12,9 @@ jest.mock('react-native-purchases', () => {
   };
 });
 
-import Purchases from 'react-native-purchases';
 import { RevenueCatAdapter, ownedFromCustomerInfo } from '../revenuecat';
 
-const mockPurchases = Purchases as any;
+const mockPurchases = jest.requireMock('react-native-purchases').default;
 
 const rcProduct = (identifier: string, price: number) => ({
   identifier,
@@ -76,4 +75,10 @@ test('restore and getOwnedPackIds map customer info', async () => {
   const adapter = new RevenueCatAdapter('appl_test');
   expect(await adapter.restore()).toEqual(['retro']);
   expect(await adapter.getOwnedPackIds()).toEqual(['food', 'retro']);
+});
+
+test('purchase resolves failed when the fallback product fetch rejects', async () => {
+  mockPurchases.getProducts.mockRejectedValue(new Error('network'));
+  const adapter = new RevenueCatAdapter('appl_test');
+  expect(await adapter.purchase('sku_food')).toEqual({ outcome: 'failed' });
 });

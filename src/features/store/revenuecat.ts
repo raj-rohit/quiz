@@ -39,8 +39,12 @@ export class RevenueCatAdapter implements StoreAdapter {
   async purchase(sku: string): Promise<PurchaseResult> {
     let product = this.cache.get(sku);
     if (!product) {
-      const [fetched] = await Purchases.getProducts([sku], PRODUCT_CATEGORY.NON_SUBSCRIPTION);
-      product = fetched;
+      try {
+        const [fetched] = await Purchases.getProducts([sku], PRODUCT_CATEGORY.NON_SUBSCRIPTION);
+        product = fetched;
+      } catch (e) {
+        return { outcome: 'failed' };
+      }
     }
     if (!product) return { outcome: 'failed' };
     try {
