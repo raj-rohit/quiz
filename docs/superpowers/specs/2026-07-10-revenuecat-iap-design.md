@@ -34,10 +34,15 @@ interface StoreProduct {
 
 type PurchaseOutcome = 'success' | 'cancelled' | 'failed';
 
+type PurchaseResult =
+  | { outcome: 'success'; ownedPackIds: string[] }
+  | { outcome: 'cancelled' }
+  | { outcome: 'failed' };
+
 interface StoreAdapter {
   init(): Promise<void>;                       // configure SDK, warm product cache
   getProducts(skus: string[]): Promise<StoreProduct[]>;
-  purchase(sku: string): Promise<{ outcome: PurchaseOutcome; ownedPackIds: string[] }>;
+  purchase(sku: string): Promise<PurchaseResult>;
   restore(): Promise<string[]>;                // owned pack ids after restore
   getOwnedPackIds(): Promise<string[]>;        // current entitlements (launch sync)
 }
@@ -74,7 +79,7 @@ RevenueCat's **public** Apple SDK key goes in `app.json` under `expo.extra.reven
 | `src/features/store/mock.ts` | **New.** Mock implementation (moves logic from `prices.ts` + mock buy). |
 | `src/features/store/index.ts` | **New.** Adapter selection + singleton export. |
 | `src/features/store/prices.ts` | **Deleted.** Prices must trigger re-renders when they load asynchronously, so a module-level `getPrice` can't work — the single price mechanism is `ProductsContext`. The mock price book moves into `mock.ts`; `BUNDLE_REGULAR`/`BUNDLE_SAVE_PCT` constants are removed in favor of computed values. |
-| `src/state/EntitlementsContext.tsx` | `buy` becomes `buy(target: PurchaseTarget): Promise<PurchaseOutcome>` — resolves `storeProductId` from the target and delegates to `adapter.purchase(sku)`; `restore` becomes async. On launch: load AsyncStorage cache immediately (offline-first), then `adapter.getOwnedPackIds()` and reconcile. AsyncStorage remains the offline cache of owned pack ids. |
+| `src/state/EntitlementsContext.tsx` | `buy` becomes `buy(sku: string | undefined): Promise<PurchaseOutcome>` — callers pass the target's `storeProductId` and it delegates to `adapter.purchase(sku)`; `restore` becomes async. On launch: load AsyncStorage cache immediately (offline-first), then `adapter.getOwnedPackIds()` and reconcile. AsyncStorage remains the offline cache of owned pack ids. |
 | `src/state/entitlements.ts` | Unchanged (`computeOwnedAfterBuy` now used by the mock adapter). |
 | `src/state/ProductsContext.tsx` | **New.** Loads products once at startup via adapter; exposes `getPrice(sku)` and `bundleSavings` (regular-price total + save %) via a `useProducts()` hook. `PackCard`, `BundleCard`, and `PurchaseSheet` switch from the `prices.ts` import to this hook. |
 | `src/components/store/PurchaseSheet.tsx` | `onConfirm` awaits the real async buy. Outcomes: `success` → existing done state; `cancelled` → silently return to confirm; `failed` → inline error text under the button. Missing price (products not loaded) → confirm button disabled. |
