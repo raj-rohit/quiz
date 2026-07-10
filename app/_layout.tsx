@@ -13,6 +13,7 @@ import '@/src/i18n';
 import { ThemeProvider } from '@/src/theme/ThemeProvider';
 import { SettingsProvider } from '@/src/state/SettingsContext';
 import { EntitlementsProvider } from '@/src/state/EntitlementsContext';
+import { ProductsProvider } from '@/src/state/ProductsContext';
 import { ProgressProvider } from '@/src/state/ProgressContext';
 import { PlayerProvider } from '@/src/state/PlayerContext';
 
@@ -49,15 +50,17 @@ export default function RootLayout() {
     <ThemeProvider>
       <SettingsProvider>
         <EntitlementsProvider>
-          <ProgressProvider>
-            <PlayerProvider>
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="lab" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
-              </Stack>
-            </PlayerProvider>
-          </ProgressProvider>
+          <ProductsProvider>
+            <ProgressProvider>
+              <PlayerProvider>
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="lab" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
+                </Stack>
+              </PlayerProvider>
+            </ProgressProvider>
+          </ProductsProvider>
         </EntitlementsProvider>
       </SettingsProvider>
     </ThemeProvider>
