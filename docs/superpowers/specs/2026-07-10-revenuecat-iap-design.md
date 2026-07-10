@@ -48,7 +48,7 @@ interface StoreAdapter {
   - `init` calls `Purchases.configure({ apiKey })` with the public Apple SDK key.
   - Owned packs come from RevenueCat **entitlements**: one entitlement per paid pack, identifier = pack id (`food`, `eighties`, `sport`, `retro`). Owned = keys of `customerInfo.entitlements.active`. Refund revocations propagate automatically.
   - `purchase` maps SDK results: user-cancelled flag → `'cancelled'`; other errors → `'failed'`; success returns updated owned list from the returned customer info.
-- **`src/features/store/mock.ts`** — today's behavior, extracted: `MOCK_PRICES` price book, instant purchase success, `computeOwnedAfterBuy` for bundle expansion, AsyncStorage-backed ownership. Used by tests, web, and Expo Go.
+- **`src/features/store/mock.ts`** — today's behavior, extracted: `MOCK_PRICES` price book, instant purchase success, AsyncStorage-backed ownership. Maps SKU → pack ids via the offline catalog (`sku_allaccess` → all paid ids via `computeOwnedAfterBuy`, single SKU → its pack id). Used by tests, web, and Expo Go, where the offline catalog is the norm.
 
 ### Adapter selection (`src/features/store/index.ts`)
 
@@ -72,10 +72,10 @@ RevenueCat's **public** Apple SDK key goes in `app.json` under `expo.extra.reven
 | `src/features/store/revenuecat.ts` | **New.** RevenueCat implementation. |
 | `src/features/store/mock.ts` | **New.** Mock implementation (moves logic from `prices.ts` + mock buy). |
 | `src/features/store/index.ts` | **New.** Adapter selection + singleton export. |
-| `src/features/store/prices.ts` | **Replaced.** Becomes a thin re-export: `getPrice(sku)` reads the fetched-products cache (same signature, so `PackCard`/`BundleCard`/`PurchaseSheet` call sites keep working). `BUNDLE_REGULAR`/`BUNDLE_SAVE_PCT` constants removed in favor of computed values. |
-| `src/state/EntitlementsContext.tsx` | `buy`/`restore` become async and delegate to the adapter. On launch: load AsyncStorage cache immediately (offline-first), then `adapter.getOwnedPackIds()` and reconcile. AsyncStorage remains the offline cache of owned pack ids. |
+| `src/features/store/prices.ts` | **Deleted.** Prices must trigger re-renders when they load asynchronously, so a module-level `getPrice` can't work — the single price mechanism is `ProductsContext`. The mock price book moves into `mock.ts`; `BUNDLE_REGULAR`/`BUNDLE_SAVE_PCT` constants are removed in favor of computed values. |
+| `src/state/EntitlementsContext.tsx` | `buy` becomes `buy(target: PurchaseTarget): Promise<PurchaseOutcome>` — resolves `storeProductId` from the target and delegates to `adapter.purchase(sku)`; `restore` becomes async. On launch: load AsyncStorage cache immediately (offline-first), then `adapter.getOwnedPackIds()` and reconcile. AsyncStorage remains the offline cache of owned pack ids. |
 | `src/state/entitlements.ts` | Unchanged (`computeOwnedAfterBuy` now used by the mock adapter). |
-| `src/state/ProductsContext.tsx` | **New.** Loads products once at startup via adapter; exposes `getPrice(sku)` and `bundleSavings` (regular-price total + save %) to components. |
+| `src/state/ProductsContext.tsx` | **New.** Loads products once at startup via adapter; exposes `getPrice(sku)` and `bundleSavings` (regular-price total + save %) via a `useProducts()` hook. `PackCard`, `BundleCard`, and `PurchaseSheet` switch from the `prices.ts` import to this hook. |
 | `src/components/store/PurchaseSheet.tsx` | `onConfirm` awaits the real async buy. Outcomes: `success` → existing done state; `cancelled` → silently return to confirm; `failed` → inline error text under the button. Missing price (products not loaded) → confirm button disabled. |
 | `src/components/store/BundleCard.tsx` | Strikethrough price + save % come from `bundleSavings` (sum of the 4 pack numeric prices, formatted with `Intl.NumberFormat` in the products' currency). Hidden when products aren't loaded. |
 | `app/(tabs)/explore.tsx`, `app/(tabs)/profile.tsx` | Adjust to async `buy`/`restore`. |
