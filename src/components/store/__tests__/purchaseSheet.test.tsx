@@ -121,12 +121,14 @@ test('failed purchase returns to confirm and shows the error', async () => {
   expect(texts(tree)).toContain('sheet.failed');
 });
 
-test('without a price the confirm button is disabled and a hint shows', () => {
+test('without a price the confirm button is disabled and a hint shows', async () => {
   mockPrice = '';
   const onConfirm = jest.fn(async () => 'success' as const);
   const tree = mount(onConfirm);
   const [confirm] = findByTestID(tree, 'confirm-purchase');
-  act(() => confirm.props.onPress());
+  await act(async () => {
+    confirm.props.onPress();
+  });
   expect(onConfirm).not.toHaveBeenCalled();
   expect(texts(tree)).toContain('sheet.noPrice');
 });
