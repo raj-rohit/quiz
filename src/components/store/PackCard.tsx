@@ -8,7 +8,7 @@ import { useTheme } from '@/src/theme/ThemeProvider';
 import { useSettings } from '@/src/state/SettingsContext';
 import { fonts, radii } from '@/src/theme/tokens';
 import { Pack } from '@/src/features/catalog/types';
-import { getPrice } from '@/src/features/store/prices';
+import { useProducts } from '@/src/state/ProductsContext';
 
 interface Props {
   pack: Pack;
@@ -23,6 +23,7 @@ export function PackCard({ pack, owned, solved, onPlay, onBuy, onTry }: Props) {
   const { colors, dark } = useTheme();
   const { locale } = useSettings();
   const { t } = useTranslation();
+  const { getPrice } = useProducts();
 
   const isOwned = owned || pack.isFree;
   const title = pack.title[locale] ?? pack.title.en ?? '';

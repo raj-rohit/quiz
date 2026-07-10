@@ -7,13 +7,14 @@ import { useTheme } from '@/src/theme/ThemeProvider';
 import { useSettings } from '@/src/state/SettingsContext';
 import { fonts, radii, rgb } from '@/src/theme/tokens';
 import { Bundle } from '@/src/features/catalog/types';
-import { getPrice, BUNDLE_REGULAR, BUNDLE_SAVE_PCT } from '@/src/features/store/prices';
+import { useProducts } from '@/src/state/ProductsContext';
 
 /** Featured "Unlock Everything" card. Hidden once all paid packs are owned. */
 export function BundleCard({ bundle, allOwned, onBuy }: { bundle: Bundle; allOwned: boolean; onBuy: (b: Bundle) => void }) {
   const { accent } = useTheme();
   const { locale } = useSettings();
   const { t } = useTranslation();
+  const { getPrice, bundleSavings } = useProducts();
 
   if (allOwned) return null;
 
@@ -33,11 +34,13 @@ export function BundleCard({ bundle, allOwned, onBuy }: { bundle: Bundle; allOwn
           <MaterialIcon name={bundle.icon} size={130} color="rgba(255,255,255,0.18)" />
         </View>
         <View>
-          <View style={styles.pill}>
-            <Text style={styles.pillText}>
-              {t('store.save')} {BUNDLE_SAVE_PCT}% · {t('store.regular')} {BUNDLE_REGULAR}
-            </Text>
-          </View>
+          {bundleSavings && (
+            <View style={styles.pill}>
+              <Text style={styles.pillText}>
+                {t('store.save')} {bundleSavings.savePct}% · {t('store.regular')} {bundleSavings.regular}
+              </Text>
+            </View>
+          )}
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.blurb}>{blurb}</Text>
           <View style={styles.bottom}>

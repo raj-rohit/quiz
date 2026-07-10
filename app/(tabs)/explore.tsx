@@ -11,7 +11,7 @@ import { PurchaseSheet, PurchaseTarget } from '@/src/components/store/PurchaseSh
 import { CategoryTile } from '@/src/components/quiz/CategoryTile';
 import { useCatalog } from '@/src/features/catalog/useCatalog';
 import { paidIds } from '@/src/features/catalog/catalog';
-import { getPrice } from '@/src/features/store/prices';
+import { useProducts } from '@/src/state/ProductsContext';
 import { useEntitlements } from '@/src/state/EntitlementsContext';
 import { useProgress } from '@/src/state/ProgressContext';
 import { useTheme } from '@/src/theme/ThemeProvider';
@@ -27,6 +27,7 @@ export default function ExploreScreen() {
   const { catalog } = useCatalog();
   const { owned, buy, restore } = useEntitlements();
   const { progress } = useProgress();
+  const { getPrice } = useProducts();
   const [target, setTarget] = useState<PurchaseTarget | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [view, setView] = useState<StoreView>('list');
