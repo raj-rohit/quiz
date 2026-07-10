@@ -69,7 +69,9 @@
     "continue": "Start",
     "cancel": "Cancel",
     "restored": "Purchases restored",
-    "restoreEmpty": "Nothing to restore"
+    "restoreEmpty": "Nothing to restore",
+    "failed": "Something went wrong. You weren't charged.",
+    "noPrice": "Price unavailable — check your connection"
   },
   "profile": {
     "name": "Player",

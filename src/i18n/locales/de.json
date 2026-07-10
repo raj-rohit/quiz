@@ -69,7 +69,9 @@
     "continue": "Starten",
     "cancel": "Abbrechen",
     "restored": "Käufe wiederhergestellt",
-    "restoreEmpty": "Nichts wiederherzustellen"
+    "restoreEmpty": "Nichts wiederherzustellen",
+    "failed": "Etwas ist schiefgelaufen. Es wurde nichts abgebucht.",
+    "noPrice": "Preis nicht verfügbar — prüfe deine Verbindung"
   },
   "profile": {
     "name": "Spieler",
