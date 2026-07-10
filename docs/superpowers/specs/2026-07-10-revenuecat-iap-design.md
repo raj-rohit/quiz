@@ -16,6 +16,7 @@ Replace the mocked purchase system with real Apple In-App Purchases via RevenueC
 - **Product IDs:** keep the existing catalog SKUs unchanged: `sku_food`, `sku_eighties`, `sku_sport`, `sku_retro`, `sku_allaccess`. All five are **non-consumable** (one-time, permanent) purchases.
 - **Regional pricing lives in App Store Connect,** not in code. Base price per product; per-country overrides (e.g. cheaper price for India) set in the ASC price schedule. The app only ever displays the localized price string the store returns.
 - **Constraints honored:** developer machine is Windows (no Mac) → all iOS builds via EAS Build cloud service. Testing on a physical iPhone with a sandbox Apple account.
+- **Seller identity: deferred.** Rohit does not want his personal name on the App Store listing. Individual Apple accounts publicly show the developer's legal name (plus EU trader contact info under the DSA, since the app sells IAPs); showing only a brand requires enrolling as an **organization** (registered legal entity + D-U-N-S number). Decision (individual vs. form a company) is postponed — all code work proceeds now on the mock adapter, and the dashboards checklist below starts only after that decision.
 
 ## Architecture
 
@@ -93,7 +94,7 @@ RevenueCat's **public** Apple SDK key goes in `app.json` under `expo.extra.reven
 
 ## Store-side configuration (dashboards, not code)
 
-### App Store Connect (after Apple Developer enrollment)
+### App Store Connect (after Apple Developer enrollment — individual vs. organization decision pending, see Decisions)
 
 1. Sign the **Paid Applications agreement** + banking/tax info (IAPs are invisible to the app until this is done).
 2. Create the app record with bundle id `com.locallogo.app`.
