@@ -26,6 +26,7 @@ test('returns null when any pack or the bundle product is missing', () => {
   expect(computeBundleSavings(ALL.slice(0, 3), PACK_SKUS, 'sku_allaccess')).toBeNull();
   expect(computeBundleSavings(ALL.slice(0, 4), PACK_SKUS, 'sku_allaccess')).toBeNull();
   expect(computeBundleSavings(ALL, PACK_SKUS, undefined)).toBeNull();
+  expect(computeBundleSavings(ALL.filter((p) => p.sku !== 'sku_retro'), PACK_SKUS, 'sku_allaccess')).toBeNull();
 });
 
 test('returns null when the bundle is not actually cheaper', () => {
