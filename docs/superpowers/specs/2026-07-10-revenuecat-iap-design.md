@@ -12,7 +12,7 @@ Replace the mocked purchase system with real Apple In-App Purchases via RevenueC
 - **Platform:** iOS first. Code supports Android too, but Google Play store setup is deferred.
 - **Integration:** RevenueCat SDK (`react-native-purchases`) behind the app's existing interfaces. The custom `PurchaseSheet` UI stays; RevenueCat's paywall UI is not used.
 - **Mock stays:** current mock behavior remains as the fallback for web, Expo Go, and Jest tests.
-- **Bundle identifier:** `com.rohitraj.locallogo` (iOS), same value for Android `package`. Permanent once the App Store app record is created.
+- **Bundle identifier:** `com.locallogo.app` (iOS), same value for Android `package`. Permanent once the App Store app record is created.
 - **Product IDs:** keep the existing catalog SKUs unchanged: `sku_food`, `sku_eighties`, `sku_sport`, `sku_retro`, `sku_allaccess`. All five are **non-consumable** (one-time, permanent) purchases.
 - **Regional pricing lives in App Store Connect,** not in code. Base price per product; per-country overrides (e.g. cheaper price for India) set in the ASC price schedule. The app only ever displays the localized price string the store returns.
 - **Constraints honored:** developer machine is Windows (no Mac) → all iOS builds via EAS Build cloud service. Testing on a physical iPhone with a sandbox Apple account.
@@ -79,7 +79,7 @@ RevenueCat's **public** Apple SDK key goes in `app.json` under `expo.extra.reven
 | `src/components/store/PurchaseSheet.tsx` | `onConfirm` awaits the real async buy. Outcomes: `success` → existing done state; `cancelled` → silently return to confirm; `failed` → inline error text under the button. Missing price (products not loaded) → confirm button disabled. |
 | `src/components/store/BundleCard.tsx` | Strikethrough price + save % come from `bundleSavings` (sum of the 4 pack numeric prices, formatted with `Intl.NumberFormat` in the products' currency). Hidden when products aren't loaded. |
 | `app/(tabs)/explore.tsx`, `app/(tabs)/profile.tsx` | Adjust to async `buy`/`restore`. |
-| `app.json` | Add `ios.bundleIdentifier` + `android.package` = `com.rohitraj.locallogo`, `extra.revenuecatIosApiKey: ""`. |
+| `app.json` | Add `ios.bundleIdentifier` + `android.package` = `com.locallogo.app`, `extra.revenuecatIosApiKey: ""`. |
 | `package.json` | Add `react-native-purchases`, `expo-dev-client` (via `npx expo install`). |
 | `src/i18n/locales/*.json` | New strings: purchase failed, price unavailable. |
 
@@ -96,7 +96,7 @@ RevenueCat's **public** Apple SDK key goes in `app.json` under `expo.extra.reven
 ### App Store Connect (after Apple Developer enrollment)
 
 1. Sign the **Paid Applications agreement** + banking/tax info (IAPs are invisible to the app until this is done).
-2. Create the app record with bundle id `com.rohitraj.locallogo`.
+2. Create the app record with bundle id `com.locallogo.app`.
 3. Create 5 in-app purchases, type **non-consumable**, product IDs exactly matching the SKUs above; add localized display names (nl/en/fr/de to match the app's locales).
 4. **Pricing:** pick a base price per product (current mock values: packs €1.99–€3.99, bundle €7.99). Apple generates all ~175 storefront prices; override individual countries in the price schedule where desired. This is the entire "different price per country" feature — zero code.
 5. Enroll in the **App Store Small Business Program** (15% commission instead of 30%).
