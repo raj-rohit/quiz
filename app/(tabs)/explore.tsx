@@ -47,16 +47,14 @@ export default function ExploreScreen() {
   const goArena = () => router.navigate('/');
   const playPack = (packId: string) => router.navigate({ pathname: '/', params: { pack: packId } });
 
-  const doRestore = () => {
-    const ok = restore();
+  const doRestore = async () => {
+    const ok = await restore();
     setToast(ok ? t('sheet.restored') : t('sheet.restoreEmpty'));
     setTimeout(() => setToast(null), 1800);
   };
 
-  const onConfirm = (tg: PurchaseTarget) => {
-    if (tg.kind === 'bundle') buy(tg.bundle.id, paid, true);
-    else buy(tg.pack.id, paid, false);
-  };
+  const onConfirm = (tg: PurchaseTarget) =>
+    buy(tg.kind === 'bundle' ? tg.bundle.storeProductId : tg.pack.storeProductId);
 
   return (
     <Screen scroll>
