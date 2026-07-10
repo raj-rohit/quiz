@@ -51,12 +51,16 @@ export function EntitlementsProvider({
 
   const buy: EntitlementsValue['buy'] = async (sku) => {
     if (!sku) return 'failed';
-    const result = await (await resolveAdapter()).purchase(sku);
-    if (result.outcome === 'success') {
-      setOwned(result.ownedPackIds);
-      saveJSON(KEYS.owned, result.ownedPackIds);
+    try {
+      const result = await (await resolveAdapter()).purchase(sku);
+      if (result.outcome === 'success') {
+        setOwned(result.ownedPackIds);
+        saveJSON(KEYS.owned, result.ownedPackIds);
+      }
+      return result.outcome;
+    } catch {
+      return 'failed'; // adapters shouldn't reject, but a stuck payment sheet is never acceptable
     }
-    return result.outcome;
   };
 
   const restore: EntitlementsValue['restore'] = async () => {

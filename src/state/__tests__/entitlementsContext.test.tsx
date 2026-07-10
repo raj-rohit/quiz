@@ -83,6 +83,14 @@ test('buy without a sku fails fast', async () => {
   expect(purchase).not.toHaveBeenCalled();
 });
 
+test('buy resolves failed if an adapter ever rejects (stuck-sheet guard)', async () => {
+  await mount(adapterWith({ purchase: async () => Promise.reject(new Error('boom')) }));
+  await act(async () => {
+    expect(await api.buy('sku_food')).toBe('failed');
+  });
+  expect(api.owned).toEqual([]);
+});
+
 test('restore replaces owned and reports whether anything was found', async () => {
   await mount(adapterWith({ restore: async () => ['food', 'retro'] }));
   await act(async () => {

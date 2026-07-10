@@ -20,6 +20,7 @@ export type PurchaseResult =
 export interface StoreAdapter {
   init(): Promise<void>;
   getProducts(skus: string[]): Promise<StoreProduct[]>;
+  /** Must RESOLVE for every error path (map failures to outcome 'failed' — callers do not catch). */
   purchase(sku: string): Promise<PurchaseResult>;
   /** Returns the full owned pack-id list after restoring. */
   restore(): Promise<string[]>;
