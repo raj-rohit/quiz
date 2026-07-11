@@ -12,8 +12,6 @@ jest.mock('@/src/lib/storage', () => {
 
 import { MockStoreAdapter, ownedAfterMockPurchase } from '../mock';
 
-const PAID = ['retro'];
-
 beforeEach(() => {
   const { __mem } = jest.requireMock('@/src/lib/storage');
   __mem.clear();
@@ -24,9 +22,9 @@ test('ownedAfterMockPurchase maps a pack sku to its pack id', () => {
   expect(ownedAfterMockPurchase('sku_food', ['food'])).toEqual(['food']);
 });
 
-test('ownedAfterMockPurchase maps the bundle sku to all paid ids', () => {
+test('ownedAfterMockPurchase maps the bundle sku to all paid ids plus the pass', () => {
   expect(ownedAfterMockPurchase('sku_allaccess', ['food'])!.sort()).toEqual(
-    ['food', 'retro'].sort()
+    ['food', 'pass', 'retro'].sort()
   );
 });
 
@@ -39,7 +37,7 @@ test('getProducts returns localized mock prices for known skus only', async () =
   const products = await adapter.getProducts(['sku_food', 'sku_allaccess', 'sku_nope']);
   expect(products).toEqual([
     { sku: 'sku_food', priceString: '€2,99', price: 2.99, currencyCode: 'EUR' },
-    { sku: 'sku_allaccess', priceString: '€7,99', price: 7.99, currencyCode: 'EUR' },
+    { sku: 'sku_allaccess', priceString: '€4,99', price: 4.99, currencyCode: 'EUR' },
   ]);
 });
 
