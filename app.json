@@ -39,7 +39,13 @@
       "typedRoutes": true
     },
     "extra": {
-      "revenuecatIosApiKey": ""
-    }
+      "revenuecatIosApiKey": "test_HuLbOEjsekkQGGiSYrlFDgwNxxO",
+      "revenuecatAndroidApiKey": "test_HuLbOEjsekkQGGiSYrlFDgwNxxO",
+      "router": {},
+      "eas": {
+        "projectId": "513ef8fa-3261-42bf-a3ca-e0e835050f9e"
+      }
+    },
+    "owner": "rohit168"
   }
 }
