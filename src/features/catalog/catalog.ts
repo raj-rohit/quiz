@@ -3,6 +3,9 @@ import { Catalog, Pack } from './types';
 // Baked-in offline catalog (SPEC §4): default content shipped with the app.
 // Supabase overrides this at runtime; this is the offline fallback.
 export const OFFLINE_CATALOG: Catalog = {
+  // Launch shape (2026-07-11 spec): retro is the only paid pack; food/sport are
+  // free with dormant SKUs; eighties lives only in Supabase (hidden) until it
+  // returns as a decade pack.
   packs: [
     {
       id: 'classics',
@@ -34,30 +37,11 @@ export const OFFLINE_CATALOG: Catalog = {
       cover: 'cyan',
       icon: 'restaurant',
       questions: 12,
-      isFree: false,
+      isFree: true,
       freeQuestionCount: 3,
       storeProductId: 'sku_food',
       sample: true,
       sortOrder: 1,
-      visible: true,
-    },
-    {
-      id: 'eighties',
-      title: { nl: 'Jaren ’80', en: 'The 80s', fr: 'Années 80', de: 'Die 80er' },
-      blurb: {
-        nl: 'Retro merken uit een ander tijdperk.',
-        en: 'Retro brands from another era.',
-        fr: 'Marques rétro d’une autre époque.',
-        de: 'Retro-Marken aus einer anderen Zeit.',
-      },
-      cover: 'ink',
-      icon: 'graphic_eq',
-      questions: 10,
-      isFree: false,
-      freeQuestionCount: 3,
-      storeProductId: 'sku_eighties',
-      sample: true,
-      sortOrder: 2,
       visible: true,
     },
     {
@@ -72,7 +56,7 @@ export const OFFLINE_CATALOG: Catalog = {
       cover: 'cream',
       icon: 'sports_soccer',
       questions: 8,
-      isFree: false,
+      isFree: true,
       freeQuestionCount: 3,
       storeProductId: 'sku_sport',
       sample: true,
@@ -103,10 +87,10 @@ export const OFFLINE_CATALOG: Catalog = {
     id: 'allaccess',
     title: { nl: 'Alles ontgrendelen', en: 'Unlock Everything', fr: 'Tout débloquer', de: 'Alles freischalten' },
     blurb: {
-      nl: 'Alle 4 betaalde packs. Eénmalig.',
-      en: 'All 4 paid packs. One-time.',
-      fr: 'Les 4 packs payants. Une fois.',
-      de: 'Alle 4 Bezahl-Packs. Einmalig.',
+      nl: 'Alle packs — nu én in de toekomst. Eénmalig.',
+      en: 'Every pack, now and in the future. One-time.',
+      fr: 'Tous les packs, actuels et futurs. Une fois.',
+      de: 'Alle Packs, jetzt und künftig. Einmalig.',
     },
     icon: 'workspace_premium',
     storeProductId: 'sku_allaccess',

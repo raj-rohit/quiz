@@ -12,7 +12,7 @@ jest.mock('@/src/lib/storage', () => {
 
 import { MockStoreAdapter, ownedAfterMockPurchase } from '../mock';
 
-const PAID = ['food', 'eighties', 'sport', 'retro'];
+const PAID = ['retro'];
 
 beforeEach(() => {
   const { __mem } = jest.requireMock('@/src/lib/storage');
@@ -25,7 +25,9 @@ test('ownedAfterMockPurchase maps a pack sku to its pack id', () => {
 });
 
 test('ownedAfterMockPurchase maps the bundle sku to all paid ids', () => {
-  expect(ownedAfterMockPurchase('sku_allaccess', ['food'])!.sort()).toEqual(PAID.slice().sort());
+  expect(ownedAfterMockPurchase('sku_allaccess', ['food'])!.sort()).toEqual(
+    ['food', 'retro'].sort()
+  );
 });
 
 test('ownedAfterMockPurchase returns null for unknown skus', () => {

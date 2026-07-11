@@ -55,14 +55,12 @@ test('exposes fetched prices and bundle savings', async () => {
       </ProductsProvider>
     );
   });
-  expect(api.getPrice('sku_food')).toBe('€2,99');
+  expect(api.getPrice('sku_retro')).toBe('€3,99');
+  expect(api.getPrice('sku_food')).toBe('');
   expect(api.getPrice(undefined)).toBe('');
   expect(api.getPrice('sku_ghost')).toBe('');
-  expect(api.bundleSavings?.savePct).toBe(33);
+  expect(api.bundleSavings).toBeNull();
   expect(fakeAdapter.getProducts).toHaveBeenCalledWith([
-    'sku_food',
-    'sku_eighties',
-    'sku_sport',
     'sku_retro',
     'sku_allaccess',
   ]);
