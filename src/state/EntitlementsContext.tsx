@@ -88,3 +88,6 @@ export const useEntitlements = (): EntitlementsValue => {
   if (!v) throw new Error('useEntitlements must be used within EntitlementsProvider');
   return v;
 };
+
+/** Non-throwing variant for providers that accept a test-only override and may mount without EntitlementsProvider. */
+export const useEntitlementsOptional = (): EntitlementsValue | null => useContext(Ctx);

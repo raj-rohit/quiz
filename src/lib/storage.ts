@@ -28,4 +28,6 @@ export const KEYS = {
   namePrompted: 'll.name.prompted',
   lastPack: 'll.lastPack',
   storeView: 'll.storeView',
+  homeNation: 'll.homeNation',
+  activeNation: 'll.activeNation',
 } as const;
