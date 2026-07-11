@@ -103,3 +103,18 @@ test('restore replaces owned and reports whether anything was found', async () =
     expect(await api.restore()).toBe(false);
   });
 });
+
+test('bundle purchase sets hasPass and keeps pass out of owned', async () => {
+  await mount(adapterWith({ purchase: async () => ({ outcome: 'success', ownedPackIds: ['retro', 'pass'] }) }));
+  await act(async () => {
+    expect(await api.buy('sku_allaccess')).toBe('success');
+  });
+  expect(api.hasPass).toBe(true);
+  expect(api.owned).toEqual(['retro']); // pass is a capability, not a pack
+});
+
+test('reconcile without pass clears hasPass', async () => {
+  await mount(adapterWith({ getOwnedPackIds: async () => ['retro'] }));
+  expect(api.hasPass).toBe(false);
+  expect(api.owned).toEqual(['retro']);
+});
