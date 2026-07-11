@@ -14,6 +14,8 @@ import { paidIds } from '@/src/features/catalog/catalog';
 import { useProducts } from '@/src/state/ProductsContext';
 import { useEntitlements } from '@/src/state/EntitlementsContext';
 import { useProgress } from '@/src/state/ProgressContext';
+import { useNation } from '@/src/state/NationContext';
+import { scopedKey } from '@/src/state/nation';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import { fonts } from '@/src/theme/tokens';
@@ -27,6 +29,7 @@ export default function ExploreScreen() {
   const { catalog } = useCatalog();
   const { owned, buy, restore } = useEntitlements();
   const { progress } = useProgress();
+  const { activeNation } = useNation();
   const { getPrice } = useProducts();
   const [target, setTarget] = useState<PurchaseTarget | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -88,7 +91,7 @@ export default function ExploreScreen() {
                 key={p.id}
                 pack={p}
                 playable={isOwned}
-                solved={progress.byPack[p.id] ?? 0}
+                solved={progress.byPack[scopedKey(activeNation, p.id)] ?? 0}
                 price={getPrice(p.storeProductId)}
                 onPress={() => (isOwned ? playPack(p.id) : setTarget({ kind: 'pack', pack: p }))}
               />
@@ -101,7 +104,7 @@ export default function ExploreScreen() {
             <PackCard
               pack={p}
               owned={owned.includes(p.id)}
-              solved={progress.byPack[p.id] ?? 0}
+              solved={progress.byPack[scopedKey(activeNation, p.id)] ?? 0}
               onPlay={(pk) => playPack(pk.id)}
               onBuy={(pk) => setTarget({ kind: 'pack', pack: pk })}
             />

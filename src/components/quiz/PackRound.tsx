@@ -11,6 +11,8 @@ import { supabase } from '@/src/lib/supabase';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import { useProgress } from '@/src/state/ProgressContext';
 import { useSettings } from '@/src/state/SettingsContext';
+import { useNation } from '@/src/state/NationContext';
+import { scopedKey } from '@/src/state/nation';
 import { useTheme } from '@/src/theme/ThemeProvider';
 import { logoUrl } from '@/src/features/quiz/logo';
 import { filterDeckByPack } from '@/src/features/quiz/deck';
@@ -41,6 +43,7 @@ export function PackRound({ pack, onExit }: Props) {
   const { colors } = useTheme();
   const { locale } = useSettings();
   const { record } = useProgress();
+  const { activeNation } = useNation();
   const [deck, setDeck] = useState<Brand[]>([]);
   const [qIndex, setQIndex] = useState(0);
   const [results, setResults] = useState<RoundResult[]>([]);
@@ -49,7 +52,7 @@ export function PackRound({ pack, onExit }: Props) {
   const [dominant, setDominant] = useState<string | null>(null);
   const [kbHeight, setKbHeight] = useState(0);
 
-  const cacheKey = `${KEYS.deck}.${pack.id}`;
+  const cacheKey = `${KEYS.deck}.${activeNation}.${pack.id}`;
 
   // Remember this pack as the last-played one.
   useEffect(() => {
@@ -90,7 +93,8 @@ export function PackRound({ pack, onExit }: Props) {
         .from('quiz_brands')
         .select('*')
         .eq('is_active', true)
-        .eq('pack_id', pack.id);
+        .eq('pack_id', pack.id)
+        .eq('market', activeNation);
       if (!active) return;
       if (data && data.length) {
         const scoped = filterDeckByPack(data as Brand[], pack.id);
@@ -102,7 +106,7 @@ export function PackRound({ pack, onExit }: Props) {
     return () => {
       active = false;
     };
-  }, [pack.id, cacheKey]);
+  }, [pack.id, cacheKey, activeNation]);
 
   const current = deck[qIndex];
   const imageUrl = current ? logoUrl(current.image_url) : undefined;
@@ -155,7 +159,7 @@ export function PackRound({ pack, onExit }: Props) {
   const packTitle = pack.title[locale] ?? pack.title.en ?? '';
 
   const onComplete = ({ correct, timeSec }: { correct: boolean; timeSec: number }) => {
-    record({ packId: pack.id, correct, timeSec });
+    record({ packId: scopedKey(activeNation, pack.id), correct, timeSec });
     setResults((r) => [...r, { correct, timeSec }]);
     if (isLastQuestion(qIndex, deck.length)) {
       setFinished(true);
