@@ -11,6 +11,8 @@ interface EntitlementsValue {
   owned: string[];
   /** All-access pass: unlocks roaming (nations) and every future pack. */
   hasPass: boolean;
+  /** True once the initial cached-owned load has resolved (before the store reconcile). */
+  ready: boolean;
   /** Purchase by store sku (pack.storeProductId / bundle.storeProductId). */
   buy: (sku: string | undefined) => Promise<PurchaseOutcome>;
   /** True if restore found anything to restore. */
@@ -27,6 +29,7 @@ export function EntitlementsProvider({
   adapter?: StoreAdapter; // test seam; defaults to the app-wide adapter
 }) {
   const [rawOwned, setRawOwned] = useState<string[]>([]);
+  const [ready, setReady] = useState(false);
   const owned = rawOwned.filter((id) => id !== PASS_ID);
   const hasPass = rawOwned.includes(PASS_ID);
 
@@ -36,7 +39,11 @@ export function EntitlementsProvider({
     let active = true;
     // Offline-first: cached entitlements render immediately…
     loadJSON<string[]>(KEYS.owned, []).then((cached) => {
-      if (active) setRawOwned(cached);
+      if (!active) return;
+      setRawOwned(cached);
+      // Mark ready before the reconcile below runs — consumers (e.g. NationContext's
+      // snap-back) can now trust `hasPass` isn't a false-negative from an empty initial state.
+      setReady(true);
     });
     // …then the store reconciles them (refunds, other-device purchases).
     (async () => {
@@ -80,7 +87,7 @@ export function EntitlementsProvider({
     }
   };
 
-  return <Ctx.Provider value={{ owned, hasPass, buy, restore }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ owned, hasPass, ready, buy, restore }}>{children}</Ctx.Provider>;
 }
 
 export const useEntitlements = (): EntitlementsValue => {

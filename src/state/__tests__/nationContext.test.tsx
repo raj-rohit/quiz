@@ -27,10 +27,10 @@ function Probe() {
   return null;
 }
 
-const mount = async (hasPassOverride: boolean, markets: Market[] = MARKETS) => {
+const mount = async (hasPassOverride: boolean, markets: Market[] = MARKETS, readyOverride?: boolean) => {
   await act(async () => {
     create(
-      <NationProvider hasPassOverride={hasPassOverride} markets={markets}>
+      <NationProvider hasPassOverride={hasPassOverride} markets={markets} readyOverride={readyOverride}>
         <Probe />
       </NationProvider>
     );
@@ -85,6 +85,15 @@ test('active snaps back to home when the pass disappears', async () => {
   await mount(false);
   expect(api.activeNation).toBe('nl');
   expect(__mem.get('ll.activeNation')).toBe('nl');
+});
+
+test('snap-back does not fire while entitlements are not yet ready (would wipe a roamer on cold start)', async () => {
+  const { __mem } = jest.requireMock('@/src/lib/storage');
+  __mem.set('ll.homeNation', 'nl');
+  __mem.set('ll.activeNation', 'be');
+  await mount(false, MARKETS, false);
+  expect(api.activeNation).toBe('be');
+  expect(__mem.get('ll.activeNation')).toBe('be');
 });
 
 test('stored codes are sanitized against live markets', async () => {

@@ -118,3 +118,27 @@ test('reconcile without pass clears hasPass', async () => {
   expect(api.hasPass).toBe(false);
   expect(api.owned).toEqual(['retro']);
 });
+
+test('ready is false before the cached load resolves, true after', async () => {
+  const { loadJSON } = jest.requireMock('@/src/lib/storage');
+  let resolveLoad!: (v: string[]) => void;
+  const pending = new Promise<string[]>((resolve) => {
+    resolveLoad = resolve;
+  });
+  loadJSON.mockImplementationOnce(() => pending);
+
+  act(() => {
+    create(
+      <EntitlementsProvider adapter={adapterWith()}>
+        <Probe />
+      </EntitlementsProvider>
+    );
+  });
+  expect(api.ready).toBe(false);
+
+  await act(async () => {
+    resolveLoad([]);
+    await pending;
+  });
+  expect(api.ready).toBe(true);
+});

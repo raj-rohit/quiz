@@ -52,6 +52,10 @@ export function useCatalog(): { catalog: Catalog } {
   return {
     catalog: {
       ...catalog,
+      // Pre-upgrade caches (saved before `markets` existed on Catalog) can be
+      // replayed via the loadJSON path above; normalize here so `markets` is
+      // never undefined at runtime even if the Supabase refresh never lands.
+      markets: catalog.markets ?? OFFLINE_CATALOG.markets,
       packs: catalog.packs.filter((p) => packInMarket(p.markets, activeNation)),
     },
   };
