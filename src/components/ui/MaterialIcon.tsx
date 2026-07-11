@@ -35,6 +35,8 @@ const MAP = {
   travel_explore: 'travel-explore',
   grid_view: 'grid-view',
   view_list: 'view-list',
+  error: 'error',
+  wifi_off: 'wifi-off',
 } as const;
 
 export type IconName = keyof typeof MAP;

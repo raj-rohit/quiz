@@ -26,7 +26,14 @@ jest.mock('@/src/theme/ThemeProvider', () => ({
 }));
 jest.mock('@/src/state/SettingsContext', () => ({ useSettings: () => ({ locale: 'en' }) }));
 // @expo/vector-icons loads fonts async, which trips act() warnings after teardown.
-jest.mock('@/src/components/ui/MaterialIcon', () => ({ MaterialIcon: () => null }));
+// The stub records rendered icon names so tests can assert on them.
+const mockIconNames: string[] = [];
+jest.mock('@/src/components/ui/MaterialIcon', () => ({
+  MaterialIcon: ({ name }: { name: string }) => {
+    mockIconNames.push(name);
+    return null;
+  },
+}));
 
 // Price comes from ProductsContext now; overridable per test.
 let mockPrice = '€7,99';
@@ -71,6 +78,7 @@ const mount = (onConfirm: (t: PurchaseTarget) => Promise<'success' | 'cancelled'
 
 beforeEach(() => {
   mockPrice = '€7,99';
+  mockIconNames.length = 0;
 });
 
 test('pressing restore calls onRestore', () => {
@@ -119,6 +127,7 @@ test('failed purchase returns to confirm and shows the error', async () => {
   await act(async () => confirm.props.onPress());
   expect(findByTestID(tree, 'confirm-purchase')).toHaveLength(1);
   expect(texts(tree)).toContain('sheet.failed');
+  expect(mockIconNames).toContain('error');
 });
 
 test('without a price the confirm button is disabled and a hint shows', async () => {
@@ -131,4 +140,5 @@ test('without a price the confirm button is disabled and a hint shows', async ()
   });
   expect(onConfirm).not.toHaveBeenCalled();
   expect(texts(tree)).toContain('sheet.noPrice');
+  expect(mockIconNames).toContain('wifi_off');
 });

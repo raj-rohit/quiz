@@ -68,6 +68,37 @@ test('exposes fetched prices and bundle savings', async () => {
   ]);
 });
 
+test('refetches prices when the app returns to the foreground', async () => {
+  const { AppState } = jest.requireActual('react-native');
+  let handler: ((state: string) => void) | undefined;
+  const subscribe = jest.spyOn(AppState, 'addEventListener').mockImplementation(((_type: string, cb: (state: string) => void) => {
+    handler = cb;
+    return { remove: jest.fn() };
+  }) as never);
+
+  await act(async () => {
+    create(
+      <ProductsProvider adapter={fakeAdapter}>
+        <Probe />
+      </ProductsProvider>
+    );
+  });
+  const calls = (fakeAdapter.getProducts as jest.Mock).mock.calls.length;
+  expect(handler).toBeDefined();
+
+  await act(async () => {
+    handler!('background');
+  });
+  expect((fakeAdapter.getProducts as jest.Mock).mock.calls.length).toBe(calls);
+
+  await act(async () => {
+    handler!('active');
+  });
+  expect((fakeAdapter.getProducts as jest.Mock).mock.calls.length).toBe(calls + 1);
+
+  subscribe.mockRestore();
+});
+
 test('prices stay empty and savings null when fetching fails', async () => {
   const broken: StoreAdapter = { ...fakeAdapter, getProducts: jest.fn(async () => Promise.reject(new Error('offline'))) };
   await act(async () => {

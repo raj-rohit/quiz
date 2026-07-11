@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { AppState } from 'react-native';
 import { useCatalog } from '@/src/features/catalog/useCatalog';
 import { getReadyStoreAdapter } from '@/src/features/store';
 import type { StoreAdapter, StoreProduct } from '@/src/features/store/adapter';
@@ -33,6 +34,16 @@ export function ProductsProvider({
   const bundleSku = catalog.bundle.storeProductId;
   const skusKey = [...packSkus, bundleSku ?? ''].join(',');
 
+  // Prices can change while backgrounded (storefront switch) or have failed to
+  // load offline — refetch every time the app returns to the foreground.
+  const [refreshTick, setRefreshTick] = useState(0);
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') setRefreshTick((t) => t + 1);
+    });
+    return () => sub.remove();
+  }, []);
+
   useEffect(() => {
     let active = true;
     (async () => {
@@ -51,7 +62,7 @@ export function ProductsProvider({
     };
     // skusKey covers packSkus + bundleSku (catalog refreshes from Supabase).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [adapter, skusKey]);
+  }, [adapter, skusKey, refreshTick]);
 
   const value = useMemo<ProductsValue>(
     () => ({
