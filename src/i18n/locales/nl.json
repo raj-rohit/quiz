@@ -69,7 +69,9 @@
     "continue": "Beginnen",
     "cancel": "Annuleer",
     "restored": "Aankopen hersteld",
-    "restoreEmpty": "Niets om te herstellen"
+    "restoreEmpty": "Niets om te herstellen",
+    "failed": "Er ging iets mis. Er is niets afgeschreven.",
+    "noPrice": "Prijs niet beschikbaar — controleer je verbinding"
   },
   "profile": {
     "name": "Speler",

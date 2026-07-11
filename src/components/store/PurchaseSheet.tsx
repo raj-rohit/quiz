@@ -11,13 +11,14 @@ import { useTheme } from '@/src/theme/ThemeProvider';
 import { useSettings } from '@/src/state/SettingsContext';
 import { fonts, radii, rgb, palette } from '@/src/theme/tokens';
 import { Pack, Bundle } from '@/src/features/catalog/types';
-import { getPrice } from '@/src/features/store/prices';
+import { useProducts } from '@/src/state/ProductsContext';
+import type { PurchaseOutcome } from '@/src/features/store/adapter';
 
 export type PurchaseTarget = { kind: 'pack'; pack: Pack } | { kind: 'bundle'; bundle: Bundle };
 
 interface Props {
   target: PurchaseTarget | null;
-  onConfirm: (target: PurchaseTarget) => void;
+  onConfirm: (target: PurchaseTarget) => Promise<PurchaseOutcome>;
   onClose: () => void;
   onStart: () => void;
   onRestore: () => void;
@@ -31,6 +32,8 @@ export function PurchaseSheet({ target, onConfirm, onClose, onStart, onRestore }
   const { locale } = useSettings();
   const { t } = useTranslation();
   const [phase, setPhase] = useState<Phase>('confirm');
+  const [error, setError] = useState<string | null>(null);
+  const { getPrice } = useProducts();
 
   if (!target) return null;
 
@@ -39,16 +42,22 @@ export function PurchaseSheet({ target, onConfirm, onClose, onStart, onRestore }
   const title = meta.title[locale] ?? meta.title.en ?? '';
   const price = getPrice(meta.storeProductId);
 
-  const go = () => {
+  const go = async () => {
+    if (!price) return; // no price loaded → purchasing is disabled
+    setError(null);
     setPhase('processing');
-    setTimeout(() => {
-      onConfirm(target);
+    const outcome = await onConfirm(target);
+    if (outcome === 'success') {
       setPhase('done');
-    }, 950);
+    } else {
+      setPhase('confirm');
+      if (outcome === 'failed') setError(t('sheet.failed'));
+    }
   };
 
   const dismiss = () => {
     setPhase('confirm');
+    setError(null);
     onClose();
   };
   const start = () => {
@@ -101,8 +110,8 @@ export function PurchaseSheet({ target, onConfirm, onClose, onStart, onRestore }
                 <Pressable
                   testID="confirm-purchase"
                   onPress={phase === 'confirm' ? go : undefined}
-                  disabled={phase === 'processing'}
-                  style={{ borderRadius: radii.pill }}
+                  disabled={phase === 'processing' || !price}
+                  style={{ borderRadius: radii.pill, opacity: price ? 1 : 0.5 }}
                 >
                   <LinearGradient colors={[colors.primary, colors.primaryDeep]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.confirmBtn}>
                     {phase === 'processing' ? (
@@ -113,12 +122,25 @@ export function PurchaseSheet({ target, onConfirm, onClose, onStart, onRestore }
                     ) : (
                       <>
                         <MaterialIcon name="lock" size={18} color="#ffffff" />
-                        <Text style={styles.confirmText}>{t('sheet.confirm')} · {price}</Text>
+                        <Text style={styles.confirmText}>{t('sheet.confirm')}{price ? ` · ${price}` : ''}</Text>
                       </>
                     )}
                   </LinearGradient>
                 </Pressable>
               </View>
+
+              {error && (
+                <View style={styles.hintRow}>
+                  <MaterialIcon name="info" size={14} color={colors.secondary} />
+                  <Text style={[styles.hint, { color: colors.secondary }]}>{error}</Text>
+                </View>
+              )}
+              {!price && (
+                <View style={styles.hintRow}>
+                  <MaterialIcon name="info" size={14} color={colors.textMuted} />
+                  <Text style={[styles.hint, { color: colors.textMuted }]}>{t('sheet.noPrice')}</Text>
+                </View>
+              )}
 
               <View style={styles.hintRow}>
                 <MaterialIcon name="fingerprint" size={14} color={colors.textMuted} />

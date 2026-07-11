@@ -28,7 +28,13 @@ jest.mock('@/src/state/SettingsContext', () => ({ useSettings: () => ({ locale: 
 // @expo/vector-icons loads fonts async, which trips act() warnings after teardown.
 jest.mock('@/src/components/ui/MaterialIcon', () => ({ MaterialIcon: () => null }));
 
-import { PurchaseSheet } from '../PurchaseSheet';
+// Price comes from ProductsContext now; overridable per test.
+let mockPrice = '€7,99';
+jest.mock('@/src/state/ProductsContext', () => ({
+  useProducts: () => ({ getPrice: () => mockPrice, bundleSavings: null }),
+}));
+
+import { PurchaseSheet, PurchaseTarget } from '../PurchaseSheet';
 
 const bundle: Bundle = {
   id: 'allaccess',
@@ -47,35 +53,82 @@ const findRestore = (tree: ReactTestRenderer) =>
 const findByTestID = (tree: ReactTestRenderer, testID: string) =>
   tree.root.findAll((n) => n.props.testID === testID && typeof n.props.onPress === 'function');
 
-test('pressing restore calls onRestore', () => {
-  const onRestore = jest.fn();
+const texts = (tree: ReactTestRenderer): string[] =>
+  tree.root.findAll((n) => (n.type as any) === 'Text' || (n.type as any)?.displayName === 'Text').flatMap((n) => {
+    const c = n.props.children;
+    return Array.isArray(c) ? c.filter((x) => typeof x === 'string') : typeof c === 'string' ? [c] : [];
+  });
+
+const mount = (onConfirm: (t: PurchaseTarget) => Promise<'success' | 'cancelled' | 'failed'>, onRestore = () => {}) => {
   let tree!: ReactTestRenderer;
   act(() => {
     tree = create(
-      <PurchaseSheet target={target} onConfirm={() => {}} onClose={() => {}} onStart={() => {}} onRestore={onRestore} />
+      <PurchaseSheet target={target} onConfirm={onConfirm} onClose={() => {}} onStart={() => {}} onRestore={onRestore} />
     );
   });
+  return tree;
+};
 
+beforeEach(() => {
+  mockPrice = '€7,99';
+});
+
+test('pressing restore calls onRestore', () => {
+  const onRestore = jest.fn();
+  const tree = mount(async () => 'success', onRestore);
   const [restore] = findRestore(tree);
   expect(restore).toBeDefined();
   act(() => restore.props.onPress());
   expect(onRestore).toHaveBeenCalledTimes(1);
 });
 
-test('restore is inert while payment is processing', () => {
-  jest.useFakeTimers();
+test('restore is inert while payment is processing', async () => {
   const onRestore = jest.fn();
-  let tree!: ReactTestRenderer;
-  act(() => {
-    tree = create(
-      <PurchaseSheet target={target} onConfirm={() => {}} onClose={() => {}} onStart={() => {}} onRestore={onRestore} />
-    );
-  });
+  let resolveBuy!: (o: 'success') => void;
+  const pending = new Promise<'success'>((r) => (resolveBuy = r));
+  const tree = mount(() => pending, onRestore);
 
   const [confirm] = findByTestID(tree, 'confirm-purchase');
-  act(() => confirm.props.onPress());
+  await act(async () => {
+    confirm.props.onPress();
+  });
 
   expect(findRestore(tree)).toHaveLength(0);
   expect(onRestore).not.toHaveBeenCalled();
-  jest.useRealTimers();
+  await act(async () => resolveBuy('success'));
+});
+
+test('successful purchase reaches the done phase', async () => {
+  const tree = mount(async () => 'success');
+  const [confirm] = findByTestID(tree, 'confirm-purchase');
+  await act(async () => confirm.props.onPress());
+  expect(texts(tree)).toContain('sheet.done');
+});
+
+test('cancelled purchase returns to confirm without an error', async () => {
+  const tree = mount(async () => 'cancelled');
+  const [confirm] = findByTestID(tree, 'confirm-purchase');
+  await act(async () => confirm.props.onPress());
+  expect(findByTestID(tree, 'confirm-purchase')).toHaveLength(1);
+  expect(texts(tree)).not.toContain('sheet.failed');
+});
+
+test('failed purchase returns to confirm and shows the error', async () => {
+  const tree = mount(async () => 'failed');
+  const [confirm] = findByTestID(tree, 'confirm-purchase');
+  await act(async () => confirm.props.onPress());
+  expect(findByTestID(tree, 'confirm-purchase')).toHaveLength(1);
+  expect(texts(tree)).toContain('sheet.failed');
+});
+
+test('without a price the confirm button is disabled and a hint shows', async () => {
+  mockPrice = '';
+  const onConfirm = jest.fn(async () => 'success' as const);
+  const tree = mount(onConfirm);
+  const [confirm] = findByTestID(tree, 'confirm-purchase');
+  await act(async () => {
+    confirm.props.onPress();
+  });
+  expect(onConfirm).not.toHaveBeenCalled();
+  expect(texts(tree)).toContain('sheet.noPrice');
 });

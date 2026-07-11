@@ -69,7 +69,9 @@
     "continue": "Commencer",
     "cancel": "Annuler",
     "restored": "Achats restaurés",
-    "restoreEmpty": "Rien à restaurer"
+    "restoreEmpty": "Rien à restaurer",
+    "failed": "Une erreur s'est produite. Vous n'avez pas été débité.",
+    "noPrice": "Prix indisponible — vérifiez votre connexion"
   },
   "profile": {
     "name": "Joueur",

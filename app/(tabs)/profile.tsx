@@ -38,8 +38,8 @@ export default function ProfileScreen() {
     { label: t('profile.best'), value: progress.bestTimeSec != null ? `${progress.bestTimeSec}s` : '—', icon: 'bolt' },
   ];
 
-  const doRestore = () => {
-    const ok = restore();
+  const doRestore = async () => {
+    const ok = await restore();
     setToast(ok ? t('sheet.restored') : t('sheet.restoreEmpty'));
     setTimeout(() => setToast(null), 1800);
   };

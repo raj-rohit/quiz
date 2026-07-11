@@ -11,7 +11,7 @@ import { PurchaseSheet, PurchaseTarget } from '@/src/components/store/PurchaseSh
 import { CategoryTile } from '@/src/components/quiz/CategoryTile';
 import { useCatalog } from '@/src/features/catalog/useCatalog';
 import { paidIds } from '@/src/features/catalog/catalog';
-import { getPrice } from '@/src/features/store/prices';
+import { useProducts } from '@/src/state/ProductsContext';
 import { useEntitlements } from '@/src/state/EntitlementsContext';
 import { useProgress } from '@/src/state/ProgressContext';
 import { useTheme } from '@/src/theme/ThemeProvider';
@@ -27,6 +27,7 @@ export default function ExploreScreen() {
   const { catalog } = useCatalog();
   const { owned, buy, restore } = useEntitlements();
   const { progress } = useProgress();
+  const { getPrice } = useProducts();
   const [target, setTarget] = useState<PurchaseTarget | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [view, setView] = useState<StoreView>('list');
@@ -47,16 +48,14 @@ export default function ExploreScreen() {
   const goArena = () => router.navigate('/');
   const playPack = (packId: string) => router.navigate({ pathname: '/', params: { pack: packId } });
 
-  const doRestore = () => {
-    const ok = restore();
+  const doRestore = async () => {
+    const ok = await restore();
     setToast(ok ? t('sheet.restored') : t('sheet.restoreEmpty'));
     setTimeout(() => setToast(null), 1800);
   };
 
-  const onConfirm = (tg: PurchaseTarget) => {
-    if (tg.kind === 'bundle') buy(tg.bundle.id, paid, true);
-    else buy(tg.pack.id, paid, false);
-  };
+  const onConfirm = (tg: PurchaseTarget) =>
+    buy(tg.kind === 'bundle' ? tg.bundle.storeProductId : tg.pack.storeProductId);
 
   return (
     <Screen scroll>
