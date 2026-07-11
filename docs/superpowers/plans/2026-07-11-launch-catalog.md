@@ -139,16 +139,16 @@ const PAID = ['retro'];
 ```
 
 ```ts
-test('ownedAfterMockPurchase maps the bundle sku to all paid ids plus the pass', () => {
+test('ownedAfterMockPurchase maps the bundle sku to all paid ids', () => {
   expect(ownedAfterMockPurchase('sku_allaccess', ['food'])!.sort()).toEqual(
-    ['food', 'pass', 'retro'].sort()
+    ['food', 'retro'].sort()
   );
 });
 ```
 
-(The `'sku_food'` mapping test still passes — food keeps its dormant SKU. The `getProducts` price expectations change in Task 3; leave them for now.)
+(The `'sku_food'` mapping test still passes — food keeps its dormant SKU. The `getProducts` price expectations and the `pass` grant change in Task 3; leave them for now.)
 
-Note: this test's new expectation (`pass` granted by the bundle) FAILS until Task 3 lands the mock change — that is the intended TDD hand-off. Run `npx jest src/features/store/__tests__/mock.test.ts --silent` and confirm the ONLY failure is the new `pass` expectation.
+Run: `npx jest --silent` — Expected: ALL suites PASS (suite is green at the end of this task; Task 3 introduces the `pass` expectation as its own failing test).
 
 - [ ] **Step 7: Commit**
 
@@ -170,7 +170,17 @@ git commit -m "feat: launch catalog shape — retro only paid pack, eighties hid
 - Consumes: `computeOwnedAfterBuy(owned, packId, paidIds, isBundle)` (unchanged); `PAID_IDS` from Task 2.
 - Produces: `export const PASS_ID = 'pass'` from `src/state/entitlements.ts`; mock bundle purchase returns pack ids ∪ `PASS_ID`; mock prices retro €2,99 / allaccess €4,99.
 
-- [ ] **Step 1: Run the failing test from Task 2**
+- [ ] **Step 1: Write the failing test — bundle grants the pass**
+
+In `src/features/store/__tests__/mock.test.ts`, update the bundle test to expect the pass:
+
+```ts
+test('ownedAfterMockPurchase maps the bundle sku to all paid ids plus the pass', () => {
+  expect(ownedAfterMockPurchase('sku_allaccess', ['food'])!.sort()).toEqual(
+    ['food', 'pass', 'retro'].sort()
+  );
+});
+```
 
 Run: `npx jest src/features/store/__tests__/mock.test.ts --silent`
 Expected: FAIL — bundle purchase result lacks `'pass'`.
