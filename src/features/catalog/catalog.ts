@@ -95,6 +95,7 @@ export const OFFLINE_CATALOG: Catalog = {
     icon: 'workspace_premium',
     storeProductId: 'sku_allaccess',
   },
+  markets: [{ code: 'nl', name: 'Nederland' }],
 };
 
 export const paidIds = (catalog: Catalog): string[] =>

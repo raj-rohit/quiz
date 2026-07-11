@@ -1,6 +1,7 @@
 import { OFFLINE_CATALOG } from './catalog';
 import { Bundle, Catalog, Cover, Pack } from './types';
 import type { IconName } from '@/src/components/ui/MaterialIcon';
+import type { Market } from '@/src/state/nation';
 
 export interface RemotePack {
   id: string;
@@ -15,10 +16,12 @@ export interface RemotePack {
   sample?: boolean;
   sort_order?: number;
   visible?: boolean;
+  markets?: string[] | null;
 }
 
 export interface RemoteConfig {
   bundle?: Record<string, any> | null;
+  markets?: Market[] | null;
 }
 
 const COVERS: Cover[] = ['accent', 'cyan', 'ink', 'cream'];
@@ -37,6 +40,7 @@ function toPack(r: RemotePack): Pack {
     sample: !!r.sample,
     sortOrder: r.sort_order ?? 0,
     visible: r.visible ?? true,
+    markets: r.markets ?? null,
   };
 }
 
@@ -64,5 +68,9 @@ export function mergeCatalog(
     .map(toPack)
     .filter((p) => p.visible)
     .sort((a, b) => a.sortOrder - b.sortOrder);
-  return { packs, bundle: bundleFrom(remoteConfig) };
+  return {
+    packs,
+    bundle: bundleFrom(remoteConfig),
+    markets: remoteConfig?.markets?.length ? remoteConfig.markets : OFFLINE_CATALOG.markets,
+  };
 }

@@ -28,3 +28,18 @@ test('bundle comes from remote config when present', () => {
   expect(cat.bundle.id).toBe('b2');
   expect(cat.bundle.storeProductId).toBe('sku_x');
 });
+
+const row = (id: string, extra: object = {}) => ({ id, title: { en: id }, ...extra });
+
+test('mergeCatalog carries pack markets through (null = all)', () => {
+  const cat = mergeCatalog([row('a'), row('b', { markets: ['be'] })], null);
+  expect(cat.packs.find((p) => p.id === 'a')!.markets).toBeNull();
+  expect(cat.packs.find((p) => p.id === 'b')!.markets).toEqual(['be']);
+});
+
+test('mergeCatalog reads app_config markets with NL fallback', () => {
+  expect(mergeCatalog([row('a')], null).markets).toEqual([{ code: 'nl', name: 'Nederland' }]);
+  expect(
+    mergeCatalog([row('a')], { markets: [{ code: 'nl', name: 'Nederland' }, { code: 'be', name: 'België' }] }).markets
+  ).toEqual([{ code: 'nl', name: 'Nederland' }, { code: 'be', name: 'België' }]);
+});
