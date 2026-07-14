@@ -25,7 +25,15 @@ test('missing or empty API key uses the mock', () => {
   expect(chooseAdapterKind({ platform: 'ios', appOwnership: null, apiKey: undefined })).toBe('mock');
 });
 
-test('web and Android use the mock (Android joins when Play is set up)', () => {
+test('Android dev/production build with an API key uses RevenueCat', () => {
+  expect(chooseAdapterKind({ platform: 'android', appOwnership: null, apiKey: 'test_x' })).toBe('revenuecat');
+});
+
+test('Android without a key uses the mock', () => {
+  expect(chooseAdapterKind({ platform: 'android', appOwnership: null, apiKey: '' })).toBe('mock');
+  expect(chooseAdapterKind({ platform: 'android', appOwnership: null, apiKey: undefined })).toBe('mock');
+});
+
+test('web uses the mock even with a key', () => {
   expect(chooseAdapterKind({ platform: 'web', appOwnership: null, apiKey: 'appl_x' })).toBe('mock');
-  expect(chooseAdapterKind({ platform: 'android', appOwnership: null, apiKey: 'appl_x' })).toBe('mock');
 });

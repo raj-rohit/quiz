@@ -1,5 +1,5 @@
 import { OFFLINE_CATALOG, PAID_IDS } from '@/src/features/catalog/catalog';
-import { computeOwnedAfterBuy } from '@/src/state/entitlements';
+import { computeOwnedAfterBuy, PASS_ID } from '@/src/state/entitlements';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import type { PurchaseResult, StoreAdapter, StoreProduct } from './adapter';
 
@@ -9,14 +9,15 @@ const MOCK_PRODUCTS: StoreProduct[] = [
   { sku: 'sku_food', priceString: '€2,99', price: 2.99, currencyCode: 'EUR' },
   { sku: 'sku_eighties', priceString: '€2,99', price: 2.99, currencyCode: 'EUR' },
   { sku: 'sku_sport', priceString: '€1,99', price: 1.99, currencyCode: 'EUR' },
-  { sku: 'sku_retro', priceString: '€3,99', price: 3.99, currencyCode: 'EUR' },
-  { sku: 'sku_allaccess', priceString: '€7,99', price: 7.99, currencyCode: 'EUR' },
+  { sku: 'sku_retro', priceString: '€2,99', price: 2.99, currencyCode: 'EUR' },
+  { sku: 'sku_allaccess', priceString: '€4,99', price: 4.99, currencyCode: 'EUR' },
 ];
 
 /** Maps a purchased sku to the resulting owned pack-id list; null for unknown skus. */
 export function ownedAfterMockPurchase(sku: string, current: string[]): string[] | null {
   if (sku === OFFLINE_CATALOG.bundle.storeProductId) {
-    return computeOwnedAfterBuy(current, OFFLINE_CATALOG.bundle.id, PAID_IDS, true);
+    // Mirror RevenueCat: the bundle grants every paid pack AND the pass flag.
+    return computeOwnedAfterBuy(current, OFFLINE_CATALOG.bundle.id, [...PAID_IDS, PASS_ID], true);
   }
   const pack = OFFLINE_CATALOG.packs.find((p) => p.storeProductId === sku);
   if (!pack) return null;

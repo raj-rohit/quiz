@@ -103,3 +103,42 @@ test('restore replaces owned and reports whether anything was found', async () =
     expect(await api.restore()).toBe(false);
   });
 });
+
+test('bundle purchase sets hasPass and keeps pass out of owned', async () => {
+  await mount(adapterWith({ purchase: async () => ({ outcome: 'success', ownedPackIds: ['retro', 'pass'] }) }));
+  await act(async () => {
+    expect(await api.buy('sku_allaccess')).toBe('success');
+  });
+  expect(api.hasPass).toBe(true);
+  expect(api.owned).toEqual(['retro']); // pass is a capability, not a pack
+});
+
+test('reconcile without pass clears hasPass', async () => {
+  await mount(adapterWith({ getOwnedPackIds: async () => ['retro'] }));
+  expect(api.hasPass).toBe(false);
+  expect(api.owned).toEqual(['retro']);
+});
+
+test('ready is false before the cached load resolves, true after', async () => {
+  const { loadJSON } = jest.requireMock('@/src/lib/storage');
+  let resolveLoad!: (v: string[]) => void;
+  const pending = new Promise<string[]>((resolve) => {
+    resolveLoad = resolve;
+  });
+  loadJSON.mockImplementationOnce(() => pending);
+
+  act(() => {
+    create(
+      <EntitlementsProvider adapter={adapterWith()}>
+        <Probe />
+      </EntitlementsProvider>
+    );
+  });
+  expect(api.ready).toBe(false);
+
+  await act(async () => {
+    resolveLoad([]);
+    await pending;
+  });
+  expect(api.ready).toBe(true);
+});

@@ -55,17 +55,46 @@ test('exposes fetched prices and bundle savings', async () => {
       </ProductsProvider>
     );
   });
-  expect(api.getPrice('sku_food')).toBe('€2,99');
+  expect(api.getPrice('sku_retro')).toBe('€3,99');
+  expect(api.getPrice('sku_food')).toBe('');
   expect(api.getPrice(undefined)).toBe('');
   expect(api.getPrice('sku_ghost')).toBe('');
-  expect(api.bundleSavings?.savePct).toBe(33);
+  expect(api.bundleSavings).toBeNull();
   expect(fakeAdapter.getProducts).toHaveBeenCalledWith([
-    'sku_food',
-    'sku_eighties',
-    'sku_sport',
     'sku_retro',
     'sku_allaccess',
   ]);
+});
+
+test('refetches prices when the app returns to the foreground', async () => {
+  const { AppState } = jest.requireActual('react-native');
+  let handler: ((state: string) => void) | undefined;
+  const subscribe = jest.spyOn(AppState, 'addEventListener').mockImplementation(((_type: string, cb: (state: string) => void) => {
+    handler = cb;
+    return { remove: jest.fn() };
+  }) as never);
+
+  await act(async () => {
+    create(
+      <ProductsProvider adapter={fakeAdapter}>
+        <Probe />
+      </ProductsProvider>
+    );
+  });
+  const calls = (fakeAdapter.getProducts as jest.Mock).mock.calls.length;
+  expect(handler).toBeDefined();
+
+  await act(async () => {
+    handler!('background');
+  });
+  expect((fakeAdapter.getProducts as jest.Mock).mock.calls.length).toBe(calls);
+
+  await act(async () => {
+    handler!('active');
+  });
+  expect((fakeAdapter.getProducts as jest.Mock).mock.calls.length).toBe(calls + 1);
+
+  subscribe.mockRestore();
 });
 
 test('prices stay empty and savings null when fetching fails', async () => {

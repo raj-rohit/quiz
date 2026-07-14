@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/src/lib/supabase';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
+import { packInMarket } from '@/src/state/nation';
+import { useNation } from '@/src/state/NationContext';
 import { mergeCatalog } from './merge';
 import { OFFLINE_CATALOG } from './catalog';
 import { Catalog } from './types';
@@ -13,6 +15,7 @@ import { Catalog } from './types';
  */
 export function useCatalog(): { catalog: Catalog } {
   const [catalog, setCatalog] = useState<Catalog>(OFFLINE_CATALOG);
+  const { activeNation } = useNation();
 
   useEffect(() => {
     let active = true;
@@ -46,5 +49,14 @@ export function useCatalog(): { catalog: Catalog } {
     };
   }, []);
 
-  return { catalog };
+  return {
+    catalog: {
+      ...catalog,
+      // Pre-upgrade caches (saved before `markets` existed on Catalog) can be
+      // replayed via the loadJSON path above; normalize here so `markets` is
+      // never undefined at runtime even if the Supabase refresh never lands.
+      markets: catalog.markets ?? OFFLINE_CATALOG.markets,
+      packs: catalog.packs.filter((p) => packInMarket(p.markets, activeNation)),
+    },
+  };
 }

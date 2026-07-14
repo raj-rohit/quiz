@@ -2,11 +2,17 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import { getReadyStoreAdapter } from '@/src/features/store';
 import type { PurchaseOutcome, StoreAdapter } from '@/src/features/store/adapter';
+import { PASS_ID } from './entitlements';
 
 export { computeOwnedAfterBuy } from './entitlements';
 
 interface EntitlementsValue {
+  /** Owned pack ids — never contains PASS_ID. */
   owned: string[];
+  /** All-access pass: unlocks roaming (nations) and every future pack. */
+  hasPass: boolean;
+  /** True once the initial cached-owned load has resolved (before the store reconcile). */
+  ready: boolean;
   /** Purchase by store sku (pack.storeProductId / bundle.storeProductId). */
   buy: (sku: string | undefined) => Promise<PurchaseOutcome>;
   /** True if restore found anything to restore. */
@@ -22,7 +28,10 @@ export function EntitlementsProvider({
   children: React.ReactNode;
   adapter?: StoreAdapter; // test seam; defaults to the app-wide adapter
 }) {
-  const [owned, setOwned] = useState<string[]>([]);
+  const [rawOwned, setRawOwned] = useState<string[]>([]);
+  const [ready, setReady] = useState(false);
+  const owned = rawOwned.filter((id) => id !== PASS_ID);
+  const hasPass = rawOwned.includes(PASS_ID);
 
   const resolveAdapter = () => (adapter ? Promise.resolve(adapter) : getReadyStoreAdapter());
 
@@ -30,14 +39,18 @@ export function EntitlementsProvider({
     let active = true;
     // Offline-first: cached entitlements render immediately…
     loadJSON<string[]>(KEYS.owned, []).then((cached) => {
-      if (active) setOwned(cached);
+      if (!active) return;
+      setRawOwned(cached);
+      // Mark ready before the reconcile below runs — consumers (e.g. NationContext's
+      // snap-back) can now trust `hasPass` isn't a false-negative from an empty initial state.
+      setReady(true);
     });
     // …then the store reconciles them (refunds, other-device purchases).
     (async () => {
       try {
         const fresh = await (await resolveAdapter()).getOwnedPackIds();
         if (!active) return;
-        setOwned(fresh);
+        setRawOwned(fresh);
         saveJSON(KEYS.owned, fresh);
       } catch {
         // Store unreachable: keep the cached list.
@@ -54,7 +67,7 @@ export function EntitlementsProvider({
     try {
       const result = await (await resolveAdapter()).purchase(sku);
       if (result.outcome === 'success') {
-        setOwned(result.ownedPackIds);
+        setRawOwned(result.ownedPackIds);
         saveJSON(KEYS.owned, result.ownedPackIds);
       }
       return result.outcome;
@@ -66,7 +79,7 @@ export function EntitlementsProvider({
   const restore: EntitlementsValue['restore'] = async () => {
     try {
       const fresh = await (await resolveAdapter()).restore();
-      setOwned(fresh);
+      setRawOwned(fresh);
       saveJSON(KEYS.owned, fresh);
       return fresh.length > 0;
     } catch {
@@ -74,7 +87,7 @@ export function EntitlementsProvider({
     }
   };
 
-  return <Ctx.Provider value={{ owned, buy, restore }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ owned, hasPass, ready, buy, restore }}>{children}</Ctx.Provider>;
 }
 
 export const useEntitlements = (): EntitlementsValue => {
@@ -82,3 +95,6 @@ export const useEntitlements = (): EntitlementsValue => {
   if (!v) throw new Error('useEntitlements must be used within EntitlementsProvider');
   return v;
 };
+
+/** Non-throwing variant for providers that accept a test-only override and may mount without EntitlementsProvider. */
+export const useEntitlementsOptional = (): EntitlementsValue | null => useContext(Ctx);

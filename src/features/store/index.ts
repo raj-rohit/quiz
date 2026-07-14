@@ -8,15 +8,16 @@ export type { StoreAdapter, StoreProduct, PurchaseOutcome, PurchaseResult } from
 export type AdapterKind = 'revenuecat' | 'mock';
 
 /**
- * iOS-only for now: the configured key is the Apple one. Android flips to
- * RevenueCat once Play products + an Android key exist (see design spec).
+ * A platform joins RevenueCat by getting its own key in app.json extra;
+ * today both hold the platform-agnostic Test Store key. When real stores
+ * exist, iOS swaps to the appl_ key and Android to the goog_ key.
  */
 export function chooseAdapterKind(input: {
   platform: string;
   appOwnership: string | null;
   apiKey: string | undefined;
 }): AdapterKind {
-  if (input.platform !== 'ios') return 'mock';
+  if (input.platform !== 'ios' && input.platform !== 'android') return 'mock';
   if (input.appOwnership === 'expo') return 'mock'; // Expo Go has no native billing module
   if (!input.apiKey) return 'mock';
   return 'revenuecat';
@@ -27,8 +28,10 @@ let ready: Promise<StoreAdapter> | null = null;
 export function getReadyStoreAdapter(): Promise<StoreAdapter> {
   if (!ready) {
     ready = (async () => {
-      const apiKey = (Constants.expoConfig?.extra as Record<string, unknown> | undefined)
-        ?.revenuecatIosApiKey as string | undefined;
+      const extra = Constants.expoConfig?.extra as Record<string, unknown> | undefined;
+      const apiKey = (Platform.OS === 'android'
+        ? extra?.revenuecatAndroidApiKey
+        : extra?.revenuecatIosApiKey) as string | undefined;
       const kind = chooseAdapterKind({
         platform: Platform.OS,
         appOwnership: Constants.appOwnership,

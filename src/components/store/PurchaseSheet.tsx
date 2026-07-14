@@ -131,13 +131,13 @@ export function PurchaseSheet({ target, onConfirm, onClose, onStart, onRestore }
 
               {error && (
                 <View style={styles.hintRow}>
-                  <MaterialIcon name="info" size={14} color={colors.secondary} />
+                  <MaterialIcon name="error" size={14} color={colors.secondary} />
                   <Text style={[styles.hint, { color: colors.secondary }]}>{error}</Text>
                 </View>
               )}
               {!price && (
                 <View style={styles.hintRow}>
-                  <MaterialIcon name="info" size={14} color={colors.textMuted} />
+                  <MaterialIcon name="wifi_off" size={14} color={colors.textMuted} />
                   <Text style={[styles.hint, { color: colors.textMuted }]}>{t('sheet.noPrice')}</Text>
                 </View>
               )}

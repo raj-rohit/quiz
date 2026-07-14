@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { loadJSON, saveJSON, KEYS } from '@/src/lib/storage';
 import { applyResult, emptyProgress, Progress, QuizResult } from './progress';
+import { migrateByPack } from './nation';
 
 export type { Progress, QuizResult } from './progress';
 
@@ -17,7 +18,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [progress, setProgress] = useState<Progress>(emptyProgress());
 
   useEffect(() => {
-    loadJSON<Progress>(KEYS.progress, emptyProgress()).then(setProgress);
+    loadJSON<Progress>(KEYS.progress, emptyProgress()).then((p) => {
+      const migrated = { ...p, byPack: migrateByPack(p.byPack ?? {}) };
+      setProgress(migrated);
+    });
   }, []);
 
   const record: ProgressValue['record'] = (r) => {
